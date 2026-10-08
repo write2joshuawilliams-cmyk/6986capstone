@@ -1,27 +1,46 @@
-# ==========================================
-# Agency Data & Sensitive Material Protection
-# ==========================================
-# Raw policy documents, PDFs, DOCX, and text extractions
+# ------------------------------
+# Sensitive / local data
+# ------------------------------
 data/raw/
+data/processed/
 data/sanitized/
+local_models/
+models/
+vector_store/
+embeddings/
+ocr_output/
+
+# Source documents should not be committed
 *.pdf
-*.docx
 *.doc
+*.docx
 *.txt
-*.csv
-*.json
 *.xlsx
 
-# Environment variables & API credentials
+# Allow intentional public project artifacts in these folders
+!evaluation/*.csv
+!evaluation/*.json
+!configs/*.json
+!artifacts/*.csv
+!artifacts/*.json
+!n8n/*.json
+
+# ------------------------------
+# Secrets / local configuration
+# ------------------------------
 .env
 .env.*
 *.pem
 *.key
-azure_config.json
+*.pfx
+*.crt
+secrets/
+local_config.json
+runtime_config.json
 
-# ==========================================
-# Python & Virtual Environments
-# ==========================================
+# ------------------------------
+# Python / notebooks
+# ------------------------------
 __pycache__/
 *.py[cod]
 *$py.class
@@ -30,18 +49,30 @@ venv/
 ENV/
 env/
 .pytest_cache/
+.ipynb_checkpoints/
 
-# ==========================================
-# IDE & System Files
-# ==========================================
+# ------------------------------
+# Model/runtime caches
+# ------------------------------
+.cache/
+huggingface/
+transformers_cache/
+torch_cache/
+*.npz
+*.faiss
+*.index
+
+# ------------------------------
+# n8n and logs
+# ------------------------------
+n8n_data/
+logs/
+*.log
+
+# ------------------------------
+# IDE / OS
+# ------------------------------
 .vscode/
 .idea/
 .DS_Store
 Thumbs.db
-
-# ==========================================
-# n8n & Local Artifacts
-# ==========================================
-n8n_data/
-logs/
-*.log

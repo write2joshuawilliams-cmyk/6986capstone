@@ -1,0 +1,19 @@
+{
+  "scenario_id": "string",
+  "scenario_type": "RFP | change request | architecture proposal | priority work item",
+  "domain": "Security | Governance | Architecture | Data Protection | Strategy",
+  "scenario_text": "string",
+  "expected_class": "Potential Policy Conflict | Missing Requirement | Aligned | Needs Human Review",
+  "expected_document_ids": "semicolon-delimited source IDs",
+  "expected_governing_document": "string",
+  "expected_section_control": "string",
+  "expected_pages": "string",
+  "expected_finding": "string",
+  "primary_rationale": "string",
+  "baseline_keywords": "string",
+  "primary_labeler": "string",
+  "independent_label": "blank until blind review",
+  "independent_reviewer": "string",
+  "freeze_status": "Draft | Frozen | Hold",
+  "freeze_timestamp": "ISO-8601 timestamp when frozen"
+}

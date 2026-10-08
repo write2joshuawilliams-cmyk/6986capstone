@@ -1,0 +1,10 @@
+{
+  "chunking": "750_100",
+  "top_k": 5,
+  "reranker": null,
+  "metadata_filter": null,
+  "execution_environment": "on-premises",
+  "embedding_model_path": "PIN_BEFORE_RUN",
+  "device": "PIN_BEFORE_RUN",
+  "offline_mode": true
+}
