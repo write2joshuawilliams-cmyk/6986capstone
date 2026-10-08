@@ -1,0 +1,25 @@
+﻿strategy,target_tokens,overlap_tokens,document_id,title,domain,chunk_count,min_tokens,max_tokens,avg_tokens
+500_75,500,75,AMA_IT_STRATEGIC_PLAN,Alabama Medicaid Agency Information Technology Strategic Plan,strategy,19,202,524,425.3
+500_75,500,75,ITPG_P000,IT Project Governance Policy (ITPG-P000),project_governance,5,142,533,300
+500_75,500,75,ITPG_P010,IT Project Governance - Process and Document Usage Policy (ITPG-P010),project_governance,3,299,540,454
+500_75,500,75,ITPG_S030,IT Project Governance Threshold Standards (ITPG-S030),project_governance,3,222,539,403
+500_75,500,75,MEDICAID_SECURITY_POLICY_V1_9,Medicaid Enterprise Security Policy - Full Set - Moderate,security_compliance,156,116,540,449.2
+500_75,500,75,STORAGE_DATA_PROTECTION,Storage Strategy - Data Protection,data_protection_continuity,14,339,539,477.9
+500_75,500,75,STORAGE_GUIDE,Storage Strategy - Guide,architecture_strategy,17,394,540,496.6
+500_75,500,75,STORAGE_INFRA_PRINCIPLES,Storage Strategy - Infrastructure Principles,architecture_principles,4,132,500,389.8
+750_100,750,100,AMA_IT_STRATEGIC_PLAN,Alabama Medicaid Agency Information Technology Strategic Plan,strategy,15,138,771,539.7
+750_100,750,100,ITPG_P000,IT Project Governance Policy (ITPG-P000),project_governance,2,633,739,686
+750_100,750,100,ITPG_P010,IT Project Governance - Process and Document Usage Policy (ITPG-P010),project_governance,3,299,565,470.7
+750_100,750,100,ITPG_S030,IT Project Governance Threshold Standards (ITPG-S030),project_governance,2,473,686,579.5
+750_100,750,100,MEDICAID_SECURITY_POLICY_V1_9,Medicaid Enterprise Security Policy - Full Set - Moderate,security_compliance,114,326,809,611.5
+750_100,750,100,STORAGE_DATA_PROTECTION,Storage Strategy - Data Protection,data_protection_continuity,9,714,799,749.2
+750_100,750,100,STORAGE_GUIDE,Storage Strategy - Guide,architecture_strategy,11,688,809,755.9
+750_100,750,100,STORAGE_INFRA_PRINCIPLES,Storage Strategy - Infrastructure Principles,architecture_principles,2,743,802,772.5
+1000_150,1000,150,AMA_IT_STRATEGIC_PLAN,Alabama Medicaid Agency Information Technology Strategic Plan,strategy,9,737,1019,893.8
+1000_150,1000,150,ITPG_P000,IT Project Governance Policy (ITPG-P000),project_governance,2,682,739,710.5
+1000_150,1000,150,ITPG_P010,IT Project Governance - Process and Document Usage Policy (ITPG-P010),project_governance,2,597,765,681
+1000_150,1000,150,ITPG_S030,IT Project Governance Threshold Standards (ITPG-S030),project_governance,2,215,994,604.5
+1000_150,1000,150,MEDICAID_SECURITY_POLICY_V1_9,Medicaid Enterprise Security Policy - Full Set - Moderate,security_compliance,74,646,1069,936.9
+1000_150,1000,150,STORAGE_DATA_PROTECTION,Storage Strategy - Data Protection,data_protection_continuity,7,763,1056,973.1
+1000_150,1000,150,STORAGE_GUIDE,Storage Strategy - Guide,architecture_strategy,9,336,1000,917.3
+1000_150,1000,150,STORAGE_INFRA_PRINCIPLES,Storage Strategy - Infrastructure Principles,architecture_principles,2,632,963,797.5
