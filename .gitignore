@@ -17,7 +17,11 @@ ocr_output/
 *.txt
 *.xlsx
 
+<<<<<<< HEAD
 # Allow intentional public project artifacts in these folders
+=======
+# Allow intentional project artifacts
+>>>>>>> 4c5ce752d9b5471d623377cc9ab7913a1d5769d9
 !evaluation/*.csv
 !evaluation/*.json
 !configs/*.json
@@ -25,18 +29,26 @@ ocr_output/
 !artifacts/*.json
 !n8n/*.json
 
+<<<<<<< HEAD
 # ------------------------------
 # Secrets / local configuration
 # ------------------------------
+=======
+# Environment variables & API credentials
+>>>>>>> 4c5ce752d9b5471d623377cc9ab7913a1d5769d9
 .env
 .env.*
 *.pem
 *.key
+<<<<<<< HEAD
 *.pfx
 *.crt
 secrets/
 local_config.json
 runtime_config.json
+=======
+
+>>>>>>> 4c5ce752d9b5471d623377cc9ab7913a1d5769d9
 
 # ------------------------------
 # Python / notebooks
