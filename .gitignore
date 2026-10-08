@@ -12,12 +12,20 @@ data/sanitized/
 *.json
 *.xlsx
 
+# Allow intentional project artifacts
+!evaluation/*.csv
+!evaluation/*.json
+!configs/*.json
+!artifacts/*.csv
+!artifacts/*.json
+!n8n/*.json
+
 # Environment variables & API credentials
 .env
 .env.*
 *.pem
 *.key
-azure_config.json
+
 
 # ==========================================
 # Python & Virtual Environments
