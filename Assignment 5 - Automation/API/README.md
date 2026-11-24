@@ -20,7 +20,7 @@ The API refuses to start if the model hash does not match.
 
 ### 1. Install Python
 
-Install Python 3.11 or 3.12 from python.org if Python is not already installed.
+Install Python 3.13 from python.org if Python is not already installed.
 
 During installation, check:
 
@@ -29,7 +29,7 @@ During installation, check:
 Confirm from Command Prompt:
 
 ```text
-python --version
+py -3.13 --version
 ```
 
 ### 2. Put the model file in this folder
@@ -222,3 +222,7 @@ Use only synthetic or specifically approved sanitized work-item text for the cap
 Do not send PII, PHI, credentials, confidential case data, or private operational records to external services.
 
 This API itself runs locally on `127.0.0.1`.
+
+## Workflow import
+
+Import `IT_Work_Triage_v1_TESTED.json` into local n8n. The display name and webhook path were renamed after testing; the original branch logic is unchanged. Test endpoint: `http://localhost:5678/webhook-test/it-work-triage`. Re-test after import.

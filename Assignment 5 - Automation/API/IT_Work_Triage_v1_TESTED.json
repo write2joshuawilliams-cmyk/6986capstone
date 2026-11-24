@@ -1,20 +1,20 @@
 {
-  "name": "IRIS - IT Work Triage v1",
+  "name": "IT Work Triage v1",
   "nodes": [
     {
       "parameters": {
         "httpMethod": "POST",
-        "path": "iris-triage",
+        "path": "it-work-triage",
         "responseMode": "responseNode",
         "options": {}
       },
-      "id": "f165e823-8b0a-4fc6-a94c-4280e80a6fc3",
+      "id": "fdb2a619-033c-4787-a15e-adc2467f3c7f",
       "name": "Work Item Intake",
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2,
       "position": [
         0,
-        0
+        288
       ],
       "webhookId": "704e8072-6074-4a03-8f13-347590e84d4d"
     },
@@ -22,13 +22,13 @@
       "parameters": {
         "jsCode": "const b = $input.first().json.body ?? {};\nconst id = typeof b.request_id === 'string' ? b.request_id.trim() : '';\nconst text = typeof b.scenario_text === 'string' ? b.scenario_text.trim() : '';\nconst domain = b.domain ?? null;\nconst valid = id.length > 0 && id.length <= 100 && text.length >= 5 && text.length <= 10000 && (domain === null || (typeof domain === 'string' && domain.length <= 100));\nreturn [{json:{valid, request_id:id, scenario_text:text, domain}}];"
       },
-      "id": "c2f087fc-0059-4c0a-a426-861c7baa4240",
+      "id": "f80f422d-c029-4d32-8430-2cf215ac0580",
       "name": "Validate Input",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
         240,
-        0
+        288
       ]
     },
     {
@@ -56,13 +56,13 @@
         },
         "options": {}
       },
-      "id": "417d747a-94f1-463b-8454-457c5fb3fa79",
+      "id": "b8e2ae1f-0fd6-4edb-b0c9-2ee79038e9c3",
       "name": "Valid Input?",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
         480,
-        0
+        288
       ]
     },
     {
@@ -73,23 +73,23 @@
         "specifyBody": "json",
         "jsonBody": "={{ JSON.stringify({request_id:$json.request_id,scenario_text:$json.scenario_text,domain:$json.domain}) }}",
         "options": {
-          "timeout": 10000,
           "response": {
             "response": {
               "fullResponse": true,
               "neverError": true,
               "responseFormat": "json"
             }
-          }
+          },
+          "timeout": 10000
         }
       },
-      "id": "e7a0ed21-3b6b-4b49-879d-785cab7e7837",
+      "id": "d51a3b98-5a6e-420c-9446-4c445a3e3ae2",
       "name": "Score Frozen Model",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
         720,
-        -120
+        160
       ],
       "onError": "continueErrorOutput"
     },
@@ -97,39 +97,39 @@
       "parameters": {
         "jsCode": "const r=$input.first().json; const b=r.body ?? {}; const id=$('Validate Input').first().json.request_id;\nconst base={request_id:id,logged_at:new Date().toISOString(),advisory_only:true,production_authorized:false};\nif(r.statusCode!==200 || !['scored','duplicate'].includes(b.status) || ![0,1].includes(b.prediction_code) || b.request_id!==id || b.model_sha256!=='e7e440cacfc5926e4eab482bc9baad188eebedf2dbab22b21b3d49fcffac4239') return [{json:{...base,status:'manual_review',route:'service_error',review_required:true,http_status:503,message:'Model response unavailable or invalid. Do not proceed.'}}];\nreturn [{json:{...base,status:b.status, prediction:b.prediction,prediction_code:b.prediction_code,confidence:b.confidence,model_version:b.model_version,model_sha256:b.model_sha256,route:b.status==='duplicate'?'duplicate':b.prediction_code===1?'human_review':'routine_advisory',review_required:b.status!=='duplicate'&&b.prediction_code===1,http_status:200}}];"
       },
-      "id": "16153367-0767-41fc-95c3-6840d73629af",
+      "id": "144ddead-5a01-48c5-8150-d3fbd1f1d617",
       "name": "Normalize Model Result",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
         960,
-        -120
+        160
       ]
     },
     {
       "parameters": {
-        "jsCode": "return [{json:{status:'rejected',route:'invalid_input',request_id:$json.request_id,http_status:400,review_required:true,production_authorized:false,message:'Supply a nonblank request_id and scenario_text of 5\u201310000 characters; domain is optional.',logged_at:new Date().toISOString()}}];"
+        "jsCode": "return [{json:{status:'rejected',route:'invalid_input',request_id:$json.request_id,http_status:400,review_required:true,production_authorized:false,message:'Supply a nonblank request_id and scenario_text of 5–10000 characters; domain is optional.',logged_at:new Date().toISOString()}}];"
       },
-      "id": "fa46119a-5966-4d8d-9ecd-e32485af09ff",
+      "id": "d699226e-9705-44c3-a96e-aa2d8aab340b",
       "name": "Reject Bad Input",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
         720,
-        200
+        480
       ]
     },
     {
       "parameters": {
         "jsCode": "return [{json:{status:'manual_review',route:'service_error',request_id:$('Validate Input').first().json.request_id,http_status:503,review_required:true,production_authorized:false,message:'Model service unavailable. Block and refer to human reviewer.',logged_at:new Date().toISOString()}}];"
       },
-      "id": "b86a34f3-4421-41c9-be28-a2a49a4b4d1b",
+      "id": "d8ce6bcd-aacf-4869-9fb1-06b25e7f15da",
       "name": "Service Unavailable",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
         960,
-        100
+        384
       ]
     },
     {
@@ -157,26 +157,26 @@
         },
         "options": {}
       },
-      "id": "b1945eca-9e09-4599-b33b-f3a4cdd10bc8",
+      "id": "bf10d9a3-6d55-40e5-99dd-e554d9ea4fa2",
       "name": "Duplicate?",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
         1200,
-        -120
+        160
       ]
     },
     {
       "parameters": {
         "jsCode": "return [{json:{...$json,message:'Existing scoring result; no repeat action.',action:'none'}}];"
       },
-      "id": "af9e4787-36d1-44b8-973e-eec190e1d645",
+      "id": "dd04422b-1748-40ed-8c9d-48f63775242e",
       "name": "Duplicate - No Action",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
         1440,
-        -280
+        0
       ]
     },
     {
@@ -204,39 +204,39 @@
         },
         "options": {}
       },
-      "id": "b6dfc099-4110-423c-a6d9-4be8b45894a6",
+      "id": "3c796480-1f36-4fae-b75e-0828e9ae0744",
       "name": "Needs Human Review?",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
         1440,
-        -40
+        240
       ]
     },
     {
       "parameters": {
         "jsCode": "return [{json:{...$json,action:'hold_for_manual_review',review_status:'pending',message:'Human review required. No production action authorized.'}}];"
       },
-      "id": "a91055a2-f38f-4537-a4c9-47151158754a",
+      "id": "af4ccb43-ca05-403a-af68-1d9f08557ff7",
       "name": "Human Review Required",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
         1680,
-        -100
+        176
       ]
     },
     {
       "parameters": {
         "jsCode": "return [{json:{...$json,action:'return_routine_advisory',message:'Routine handling recommended. Existing approval and change controls still apply.'}}];"
       },
-      "id": "8b187040-7c74-4b23-b828-f9c498d18707",
+      "id": "1ea9c586-6552-435b-82db-87343ce9c193",
       "name": "Routine Advisory",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
         1680,
-        80
+        368
       ]
     },
     {
@@ -247,16 +247,17 @@
           "responseCode": "={{ $json.http_status }}"
         }
       },
-      "id": "d8a9c790-a319-46d5-9e48-5ece2d67a575",
+      "id": "d34dd476-8c4c-47e2-8bc7-4da96f55420c",
       "name": "Return Logged Result",
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.4,
       "position": [
-        1940,
-        140
+        1936,
+        416
       ]
     }
   ],
+  "pinData": {},
   "connections": {
     "Work Item Intake": {
       "main": [
@@ -422,9 +423,8 @@
   "active": false,
   "settings": {
     "executionOrder": "v1",
-    "saveManualExecutions": true,
-    "saveDataSuccessExecution": "all",
-    "saveDataErrorExecution": "all"
+    "binaryMode": "separate"
   },
-  "pinData": {}
+  "nodeGroups": [],
+  "tags": []
 }

@@ -1,10 +1,10 @@
 {
-  "name": "IRIS - IT Work Triage v1",
+  "name": "IT Work Triage v1",
   "nodes": [
     {
       "parameters": {
         "httpMethod": "POST",
-        "path": "iris-triage",
+        "path": "it-work-triage",
         "responseMode": "responseNode",
         "options": {}
       },
@@ -108,7 +108,7 @@
     },
     {
       "parameters": {
-        "jsCode": "return [{json:{status:'rejected',route:'invalid_input',request_id:$json.request_id,http_status:400,review_required:true,production_authorized:false,message:'Supply a nonblank request_id and scenario_text of 5\u201310000 characters; domain is optional.',logged_at:new Date().toISOString()}}];"
+        "jsCode": "return [{json:{status:'rejected',route:'invalid_input',request_id:$json.request_id,http_status:400,review_required:true,production_authorized:false,message:'Supply a nonblank request_id and scenario_text of 5–10000 characters; domain is optional.',logged_at:new Date().toISOString()}}];"
       },
       "id": "fa46119a-5966-4d8d-9ecd-e32485af09ff",
       "name": "Reject Bad Input",
