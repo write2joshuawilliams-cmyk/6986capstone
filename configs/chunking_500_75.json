@@ -1,6 +1,0 @@
-{
-  "target_tokens": 500,
-  "overlap_tokens": 75,
-  "preserve_page_markers": true,
-  "preserve_sections": true
-}
