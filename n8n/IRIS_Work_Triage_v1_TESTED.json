@@ -1,0 +1,430 @@
+{
+  "name": "IRIS - IT Work Triage v1",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "iris-triage",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "fdb2a619-033c-4787-a15e-adc2467f3c7f",
+      "name": "Work Item Intake",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        0,
+        288
+      ],
+      "webhookId": "704e8072-6074-4a03-8f13-347590e84d4d"
+    },
+    {
+      "parameters": {
+        "jsCode": "const b = $input.first().json.body ?? {};\nconst id = typeof b.request_id === 'string' ? b.request_id.trim() : '';\nconst text = typeof b.scenario_text === 'string' ? b.scenario_text.trim() : '';\nconst domain = b.domain ?? null;\nconst valid = id.length > 0 && id.length <= 100 && text.length >= 5 && text.length <= 10000 && (domain === null || (typeof domain === 'string' && domain.length <= 100));\nreturn [{json:{valid, request_id:id, scenario_text:text, domain}}];"
+      },
+      "id": "f80f422d-c029-4d32-8430-2cf215ac0580",
+      "name": "Validate Input",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        240,
+        288
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "aa666ff4-e1e8-4306-8fab-e1b2749df1b1",
+              "leftValue": "={{ $json.valid }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "b8e2ae1f-0fd6-4edb-b0c9-2ee79038e9c3",
+      "name": "Valid Input?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        480,
+        288
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://127.0.0.1:8000/score",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({request_id:$json.request_id,scenario_text:$json.scenario_text,domain:$json.domain}) }}",
+        "options": {
+          "response": {
+            "response": {
+              "fullResponse": true,
+              "neverError": true,
+              "responseFormat": "json"
+            }
+          },
+          "timeout": 10000
+        }
+      },
+      "id": "d51a3b98-5a6e-420c-9446-4c445a3e3ae2",
+      "name": "Score Frozen Model",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        720,
+        160
+      ],
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "const r=$input.first().json; const b=r.body ?? {}; const id=$('Validate Input').first().json.request_id;\nconst base={request_id:id,logged_at:new Date().toISOString(),advisory_only:true,production_authorized:false};\nif(r.statusCode!==200 || !['scored','duplicate'].includes(b.status) || ![0,1].includes(b.prediction_code) || b.request_id!==id || b.model_sha256!=='e7e440cacfc5926e4eab482bc9baad188eebedf2dbab22b21b3d49fcffac4239') return [{json:{...base,status:'manual_review',route:'service_error',review_required:true,http_status:503,message:'Model response unavailable or invalid. Do not proceed.'}}];\nreturn [{json:{...base,status:b.status, prediction:b.prediction,prediction_code:b.prediction_code,confidence:b.confidence,model_version:b.model_version,model_sha256:b.model_sha256,route:b.status==='duplicate'?'duplicate':b.prediction_code===1?'human_review':'routine_advisory',review_required:b.status!=='duplicate'&&b.prediction_code===1,http_status:200}}];"
+      },
+      "id": "144ddead-5a01-48c5-8150-d3fbd1f1d617",
+      "name": "Normalize Model Result",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        960,
+        160
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "return [{json:{status:'rejected',route:'invalid_input',request_id:$json.request_id,http_status:400,review_required:true,production_authorized:false,message:'Supply a nonblank request_id and scenario_text of 5–10000 characters; domain is optional.',logged_at:new Date().toISOString()}}];"
+      },
+      "id": "d699226e-9705-44c3-a96e-aa2d8aab340b",
+      "name": "Reject Bad Input",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        720,
+        480
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "return [{json:{status:'manual_review',route:'service_error',request_id:$('Validate Input').first().json.request_id,http_status:503,review_required:true,production_authorized:false,message:'Model service unavailable. Block and refer to human reviewer.',logged_at:new Date().toISOString()}}];"
+      },
+      "id": "d8ce6bcd-aacf-4869-9fb1-06b25e7f15da",
+      "name": "Service Unavailable",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        960,
+        384
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "b7d7f9bb-8e34-4ac6-85f2-b316b61578f8",
+              "leftValue": "={{ $json.route === 'duplicate' }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "bf10d9a3-6d55-40e5-99dd-e554d9ea4fa2",
+      "name": "Duplicate?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1200,
+        160
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "return [{json:{...$json,message:'Existing scoring result; no repeat action.',action:'none'}}];"
+      },
+      "id": "dd04422b-1748-40ed-8c9d-48f63775242e",
+      "name": "Duplicate - No Action",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1440,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "90512a9c-a3d9-45df-b0ac-f40d2cb71e35",
+              "leftValue": "={{ $json.review_required === true }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "3c796480-1f36-4fae-b75e-0828e9ae0744",
+      "name": "Needs Human Review?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1440,
+        240
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "return [{json:{...$json,action:'hold_for_manual_review',review_status:'pending',message:'Human review required. No production action authorized.'}}];"
+      },
+      "id": "af4ccb43-ca05-403a-af68-1d9f08557ff7",
+      "name": "Human Review Required",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1680,
+        176
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "return [{json:{...$json,action:'return_routine_advisory',message:'Routine handling recommended. Existing approval and change controls still apply.'}}];"
+      },
+      "id": "1ea9c586-6552-435b-82db-87343ce9c193",
+      "name": "Routine Advisory",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1680,
+        368
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ $json }}",
+        "options": {
+          "responseCode": "={{ $json.http_status }}"
+        }
+      },
+      "id": "d34dd476-8c4c-47e2-8bc7-4da96f55420c",
+      "name": "Return Logged Result",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.4,
+      "position": [
+        1936,
+        416
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Work Item Intake": {
+      "main": [
+        [
+          {
+            "node": "Validate Input",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validate Input": {
+      "main": [
+        [
+          {
+            "node": "Valid Input?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Valid Input?": {
+      "main": [
+        [
+          {
+            "node": "Score Frozen Model",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Reject Bad Input",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Score Frozen Model": {
+      "main": [
+        [
+          {
+            "node": "Normalize Model Result",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Service Unavailable",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Normalize Model Result": {
+      "main": [
+        [
+          {
+            "node": "Duplicate?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Duplicate?": {
+      "main": [
+        [
+          {
+            "node": "Duplicate - No Action",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Needs Human Review?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Needs Human Review?": {
+      "main": [
+        [
+          {
+            "node": "Human Review Required",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Routine Advisory",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Duplicate - No Action": {
+      "main": [
+        [
+          {
+            "node": "Return Logged Result",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Human Review Required": {
+      "main": [
+        [
+          {
+            "node": "Return Logged Result",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Routine Advisory": {
+      "main": [
+        [
+          {
+            "node": "Return Logged Result",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Reject Bad Input": {
+      "main": [
+        [
+          {
+            "node": "Return Logged Result",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Service Unavailable": {
+      "main": [
+        [
+          {
+            "node": "Return Logged Result",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "nodeGroups": [],
+  "tags": []
+}
