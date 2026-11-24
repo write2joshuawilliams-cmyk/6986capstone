@@ -1,0 +1,7 @@
+DEMO-ALIGN-001 Potential Conflict 3 [('POL-001 v1.0 §1', 'Potential Conflict'), ('SOP-002 v1.0 §1', 'Potential Conflict'), ('STR-001 v1.0 §2', 'Potential Conflict')]
+DEMO-ALIGN-002 Requires Review 3 [('POL-002 v1.0 §1', 'Requires Review'), ('SOP-001 v1.0 §1', 'Requires Review'), ('STR-001 v1.0 §1', 'Requires Review')]
+DEMO-ALIGN-003 Requires Review 3 [('POL-003 v1.0 §1', 'Requires Review'), ('SOP-003 v1.0 §1', 'Requires Review'), ('STR-001 v1.0 §1', 'Requires Review')]
+DEMO-ALIGN-004 Requires Review 3 [('POL-004 v1.0 §1', 'Requires Review'), ('SOP-004 v1.0 §1', 'Requires Review'), ('STR-001 v1.0 §3', 'Requires Review')]
+DEMO-ALIGN-005 Unmapped 0 []
+DEMO-ALIGN-006 Aligned 3 [('POL-002 v1.0 §1', 'Aligned'), ('SOP-001 v1.0 §1', 'Aligned'), ('STR-001 v1.0 §1', 'Aligned')]
+7 interface tests passed (including invalid input).

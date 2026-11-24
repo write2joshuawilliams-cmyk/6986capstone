@@ -1,0 +1,18 @@
+{
+  "document_id": "SOP-004",
+  "title": "Procurement Intake Procedure",
+  "type": "SOP",
+  "domain": "Procurement/Vendor/RFP",
+  "version": "1.0",
+  "provenance": "Synthetic academic example; not an actual agency policy or authoritative guidance.",
+  "sections": [
+    {
+      "section_id": "1",
+      "heading": "Intake",
+      "passage": "Document business need, estimated cost, requirements, alternatives, security implications and the approving procurement owner. Refer nonstandard commitments or new solution purchases for review.",
+      "relevance_pattern": "\\b(procure\\w*|purchase|rfp|contract|vendor proposal|renewal)\\b",
+      "conflict_pattern": "\\b(skip (?:review|approval)|without (?:review|approval))\\b",
+      "alignment_pattern": ""
+    }
+  ]
+}

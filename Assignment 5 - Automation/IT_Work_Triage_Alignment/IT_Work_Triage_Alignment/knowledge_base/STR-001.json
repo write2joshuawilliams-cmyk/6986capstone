@@ -1,0 +1,34 @@
+{
+  "document_id": "STR-001",
+  "title": "Technology Strategic Plan",
+  "type": "Strategy",
+  "domain": "Cross-domain",
+  "version": "1.0",
+  "provenance": "Synthetic academic example; not an actual agency policy or authoritative guidance.",
+  "sections": [
+    {
+      "section_id": "1",
+      "heading": "Reliable services",
+      "passage": "Objective 1: Maintain reliable and recoverable public services through controlled maintenance, tested recovery capabilities and reduced operational disruption.",
+      "relevance_pattern": "\\b(patch\\w*|maintenance|backup|restore|recovery|retention|outage)\\b",
+      "conflict_pattern": "\\b(skip (?:backup|rollback|validation)|without (?:approval|rollback)|unapproved)\\b",
+      "alignment_pattern": "(?=.*\\bapproved\\b)(?=.*\\bmaintenance window\\b)(?=.*\\brollback confirmed\\b)(?=.*\\bservice health validated\\b)"
+    },
+    {
+      "section_id": "2",
+      "heading": "Security and trust",
+      "passage": "Objective 2: Reduce security risk by enforcing least privilege, multifactor authentication, controlled vendor access and documented security decisions.",
+      "relevance_pattern": "\\b(vendor access|vendor.*privileg|mfa|multifactor|authentication|security review|privileg\\w*)\\b",
+      "conflict_pattern": "\\b(without (?:mfa|multifactor)|permanent privileged|disable mfa)\\b",
+      "alignment_pattern": ""
+    },
+    {
+      "section_id": "3",
+      "heading": "Responsible investment",
+      "passage": "Objective 3: Align technology investments with documented business needs, lifecycle affordability, interoperability and accountable procurement.",
+      "relevance_pattern": "\\b(procure\\w*|purchase|rfp|contract|vendor proposal|renewal)\\b",
+      "conflict_pattern": "",
+      "alignment_pattern": ""
+    }
+  ]
+}

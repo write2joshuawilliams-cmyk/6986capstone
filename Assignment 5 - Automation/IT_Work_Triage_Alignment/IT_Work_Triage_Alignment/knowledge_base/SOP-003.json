@@ -1,0 +1,18 @@
+{
+  "document_id": "SOP-003",
+  "title": "Backup and Restore Procedure",
+  "type": "SOP",
+  "domain": "Backup/DR",
+  "version": "1.0",
+  "provenance": "Synthetic academic example; not an actual agency policy or authoritative guidance.",
+  "sections": [
+    {
+      "section_id": "1",
+      "heading": "Backup changes and recovery",
+      "passage": "Routine backup monitoring and approved restore verification may use standard procedures. Escalate retention reductions, failed critical restores, and proposed modifications to recovery protection. Document validation and recovery impact.",
+      "relevance_pattern": "\\b(backup|restore|recovery|retention)\\b",
+      "conflict_pattern": "\\b(skip (?:validation|restore test)|without (?:approval|review))\\b",
+      "alignment_pattern": "(?=.*\\b(?:routine backup monitoring|approved restore verification)\\b)(?=.*\\bstandard procedure\\b)"
+    }
+  ]
+}

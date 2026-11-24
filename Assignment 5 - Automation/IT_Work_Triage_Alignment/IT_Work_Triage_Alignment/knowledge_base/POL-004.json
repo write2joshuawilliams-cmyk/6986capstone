@@ -1,0 +1,18 @@
+{
+  "document_id": "POL-004",
+  "title": "Technology Procurement Policy",
+  "type": "Policy",
+  "domain": "Procurement/Vendor/RFP",
+  "version": "1.0",
+  "provenance": "Synthetic academic example; not an actual agency policy or authoritative guidance.",
+  "sections": [
+    {
+      "section_id": "1",
+      "heading": "Review before commitment",
+      "passage": "New technology procurement, vendor commitments and material contract changes require documented requirements, security review, procurement approval and assessment of lifecycle cost before commitment.",
+      "relevance_pattern": "\\b(procure\\w*|purchase|rfp|contract|vendor proposal|renewal)\\b",
+      "conflict_pattern": "\\b(without (?:approval|review|competitive review)|skip (?:security|procurement) review|unapproved contract)\\b",
+      "alignment_pattern": "(?=.*\\bsecurity review completed\\b)(?=.*\\bprocurement approved\\b)(?=.*\\blifecycle cost assessed\\b)"
+    }
+  ]
+}

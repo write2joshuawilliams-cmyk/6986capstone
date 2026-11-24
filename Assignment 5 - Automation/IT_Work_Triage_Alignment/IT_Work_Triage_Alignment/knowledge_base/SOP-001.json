@@ -1,0 +1,18 @@
+{
+  "document_id": "SOP-001",
+  "title": "Routine Maintenance Procedure",
+  "type": "SOP",
+  "domain": "Infrastructure",
+  "version": "1.0",
+  "provenance": "Synthetic academic example; not an actual agency policy or authoritative guidance.",
+  "sections": [
+    {
+      "section_id": "1",
+      "heading": "Standard patching",
+      "passage": "Routine operating system patching follows an existing approved change procedure and scheduled maintenance window. Confirm backups or rollback, record the work, and validate service health afterward.",
+      "relevance_pattern": "\\b(patch\\w*|operating system update|maintenance window)\\b",
+      "conflict_pattern": "\\b(without (?:approval|rollback)|skip (?:backup|validation|approval)|unapproved)\\b",
+      "alignment_pattern": "(?=.*\\bapproved\\b)(?=.*\\b(?:scheduled|documented) maintenance window\\b)(?=.*\\b(?:existing change procedure|approved change procedure)\\b)(?=.*\\b(?:backup confirmed|rollback confirmed)\\b)(?=.*\\bwork recorded\\b)(?=.*\\bservice health validated\\b)"
+    }
+  ]
+}

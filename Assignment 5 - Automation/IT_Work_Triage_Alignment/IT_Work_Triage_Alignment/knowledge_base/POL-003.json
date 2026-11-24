@@ -1,0 +1,18 @@
+{
+  "document_id": "POL-003",
+  "title": "Backup and Retention Policy",
+  "type": "Policy",
+  "domain": "Backup/DR",
+  "version": "1.0",
+  "provenance": "Synthetic academic example; not an actual agency policy or authoritative guidance.",
+  "sections": [
+    {
+      "section_id": "1",
+      "heading": "Retention changes",
+      "passage": "Backup retention must comply with approved retention schedules. Any reduction in retention, alteration of immutability, or deletion of protected recovery copies requires review by the data owner and security or recovery owner before implementation.",
+      "relevance_pattern": "\\b(backup|retention|immutable|immutability|recovery cop\\w*)\\b",
+      "conflict_pattern": "\\b(without (?:approval|review)|unapproved|disable immutability|delete protected recovery)\\b",
+      "alignment_pattern": ""
+    }
+  ]
+}
