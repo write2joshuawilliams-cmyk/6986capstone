@@ -1,0 +1,727 @@
+{
+  "name": "IT Work Triage v2 - Combined Assessment",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "it-work-triage-v2",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "eda0faf0-5103-4c92-88cf-43fbc64e3f5b",
+      "name": "Work Item Intake",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        0,
+        320
+      ],
+      "webhookId": "a4bcf74c-eae8-40da-89b9-d29b735ac0a1"
+    },
+    {
+      "parameters": {
+        "jsCode": "const b=$input.first().json.body ?? {};\nconst id=typeof b.request_id==='string'?b.request_id.trim():'';\nconst text=typeof b.scenario_text==='string'?b.scenario_text.trim():'';\nconst domain=b.domain??null;\nconst fields={impact:['low','medium','high','unknown'],urgency:['low','medium','high','unknown'],critical_outage:['yes','no','unknown'],active_security_incident:['yes','no','unknown'],critical_recovery_failure:['yes','no','unknown']};\nconst risk={}; let valid=id.length>0&&id.length<=100&&text.length>=5&&text.length<=10000&&(domain===null||(typeof domain==='string'&&domain.length<=100));\nfor(const [k,allowed] of Object.entries(fields)){risk[k]=b[k]===undefined?'unknown':b[k];if(!allowed.includes(risk[k]))valid=false;}\nreturn [{json:{valid,request_id:id,scenario_text:text,domain,...risk}}];"
+      },
+      "id": "0f49dcf0-9a24-4887-9feb-ec8193e652a5",
+      "name": "Validate Input",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        240,
+        320
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "3ad0118d-a14d-41e5-b7aa-6bf3ccfd70c5",
+              "leftValue": "={{ $json.valid }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "6ca82f87-6aef-4123-a196-2a67db5d3013",
+      "name": "Valid Input?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        480,
+        320
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://127.0.0.1:8000/score",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({request_id:$json.request_id,scenario_text:$json.scenario_text,domain:$json.domain}) }}",
+        "options": {
+          "response": {
+            "response": {
+              "fullResponse": true,
+              "neverError": true,
+              "responseFormat": "json"
+            }
+          },
+          "timeout": 10000
+        }
+      },
+      "id": "5c69cdb8-c576-4ffc-a21f-f2422ff61b4a",
+      "name": "Score Frozen Model",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        720,
+        160
+      ],
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "const r=$input.first().json,b=r.body??{},id=$('Validate Input').first().json.request_id;\nconst ok=r.statusCode===200&&b.request_id===id&&['scored','duplicate'].includes(b.status)&&[0,1].includes(b.prediction_code)&&b.model_sha256==='e7e440cacfc5926e4eab482bc9baad188eebedf2dbab22b21b3d49fcffac4239'&&b.model_version==='NB-v1'&&Number.isFinite(b.confidence)&&b.confidence>=0&&b.confidence<=1;\nreturn [{json:{ok,request_id:id,classification:ok?b:null}}];"
+      },
+      "id": "c4104a5f-b62f-40e3-87cc-8acef7c2cdc8",
+      "name": "Check Model Response",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        960,
+        160
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "12f5f1b5-d167-451a-934f-b9d2446a24bd",
+              "leftValue": "={{ $json.ok }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "231e22da-119b-49a0-bae4-32e5945f8f14",
+      "name": "Model Valid?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1200,
+        160
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "3ea8d54a-19e0-4c7e-a24b-ce3f77f01158",
+              "leftValue": "={{ $json.classification.status==='duplicate' }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "1ad073d7-c61b-4c58-8791-a7e760ab2840",
+      "name": "Duplicate?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1440,
+        160
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://127.0.0.1:8001/align",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({request_id:$('Validate Input').first().json.request_id,scenario_text:$('Validate Input').first().json.scenario_text,domain:$('Validate Input').first().json.domain}) }}",
+        "options": {
+          "response": {
+            "response": {
+              "fullResponse": true,
+              "neverError": true,
+              "responseFormat": "json"
+            }
+          },
+          "timeout": 10000
+        }
+      },
+      "id": "672a4d6f-d9be-49d4-82bb-a6f876f05150",
+      "name": "Retrieve Document Alignment",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1680,
+        320
+      ],
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "const r=$input.first().json,b=r.body??{},id=$('Validate Input').first().json.request_id;\nconst ok=r.statusCode===200&&b.request_id===id&&['Aligned','Requires Review','Potential Conflict','Unmapped'].includes(b.alignment_status)&&['policy','sop','strategy'].every(k=>Array.isArray(b[k]))&&typeof b.review_required==='boolean'&&b.production_authorized===false;\nreturn [{json:{ok,alignment:ok?b:null}}];"
+      },
+      "id": "8cc53cfe-e67c-4379-91d1-32906ca4baad",
+      "name": "Check Alignment Response",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1920,
+        320
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "2ee786aa-6d04-408a-84f1-03d7d8265967",
+              "leftValue": "={{ $json.ok }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "29865e6b-fc48-44ec-8cec-bf9d75da7673",
+      "name": "Alignment Valid?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        2160,
+        320
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://127.0.0.1:8002/priority",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({request_id:$('Validate Input').first().json.request_id,impact:$('Validate Input').first().json.impact,urgency:$('Validate Input').first().json.urgency,critical_outage:$('Validate Input').first().json.critical_outage,active_security_incident:$('Validate Input').first().json.active_security_incident,critical_recovery_failure:$('Validate Input').first().json.critical_recovery_failure,alignment_status:$json.alignment.alignment_status}) }}",
+        "options": {
+          "response": {
+            "response": {
+              "fullResponse": true,
+              "neverError": true,
+              "responseFormat": "json"
+            }
+          },
+          "timeout": 10000
+        }
+      },
+      "id": "d3722284-eca5-45a4-88fe-4dfaf928d309",
+      "name": "Assess Priority",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2400,
+        320
+      ],
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "const r=$input.first().json,p=r.body??{},i=$('Validate Input').first().json,c=$('Check Model Response').first().json.classification,a=$('Check Alignment Response').first().json.alignment;\nconst ok=r.statusCode===200&&p.request_id===i.request_id&&['P1','P2','P3','P4','Undetermined'].includes(p.priority)&&typeof p.review_required==='boolean'&&typeof p.provisional==='boolean'&&Array.isArray(p.reasons)&&p.production_authorized===false;\nconst reasons=[];if(c.prediction_code===1)reasons.push('Classifier recommends escalation');if(a.alignment_status!=='Aligned'||a.review_required)reasons.push('Document alignment requires review');if(!ok)reasons.push('Priority service response invalid');else if(p.review_required||p.provisional||!['P3','P4'].includes(p.priority))reasons.push('Priority assessment requires review');\nreturn [{json:{request_id:i.request_id,classification:c,alignment:a,priority:ok?p:null,review_required:reasons.length>0,review_reasons:reasons,status:ok?'assessed':'manual_review',http_status:ok?200:503,advisory_only:true,production_authorized:false,assessed_at:new Date().toISOString()}}];"
+      },
+      "id": "8901df00-bc36-43f8-9e67-0f1ce68f9766",
+      "name": "Combine Decision",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2640,
+        320
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "348566fb-a1a8-4f1f-9e7e-bcff3baedd3e",
+              "leftValue": "={{ $json.review_required }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "9f3e6071-703c-46f1-9e33-566a55661c24",
+      "name": "Needs Human Review?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        2880,
+        320
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "return [{json:{...$json,action:'hold_for_manual_review',review_status:'pending',message:'Human review required. No production action authorized.'}}];"
+      },
+      "id": "e57d840a-fc5b-4a94-8683-78bda3a14e0c",
+      "name": "Human Review Required",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3120,
+        208
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "return [{json:{...$json,action:'return_routine_advisory',message:'Routine handling recommended. Existing approval and change controls still apply.'}}];"
+      },
+      "id": "a7bf4854-caf4-45cc-9354-c393dd541637",
+      "name": "Routine Advisory",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3120,
+        416
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "return [{json:{request_id:$json.request_id,status:'duplicate',classification:$json.classification,review_required:true,action:'no_repeat_action',message:'Existing scoring record; combined assessment not repeated. Refer to prior result or manual review. Do not treat this as approval.',http_status:200,advisory_only:true,production_authorized:false}}];"
+      },
+      "id": "f5a84a35-3a4a-43ba-beab-af2b9ec32093",
+      "name": "Duplicate - No Action",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1680,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "return [{json:{request_id:$json.request_id,status:'rejected',message:'Invalid request ID, scenario, domain or risk indicator.',review_required:true,http_status:400,production_authorized:false}}];"
+      },
+      "id": "7890eb62-0125-4271-a670-81dcd2e4b1fd",
+      "name": "Reject Bad Input",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        720,
+        736
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "return [{json:{request_id:$('Validate Input').first().json.request_id,status:'manual_review',failed_service:\"Model Unavailable\",message:'Service unavailable or invalid response; block and refer to human review.',review_required:true,http_status:503,advisory_only:true,production_authorized:false}}];"
+      },
+      "id": "08fb33fc-cc4b-4074-935d-caf62313e5ff",
+      "name": "Model Unavailable",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1200,
+        640
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "return [{json:{request_id:$('Validate Input').first().json.request_id,status:'manual_review',failed_service:\"Alignment Unavailable\",message:'Service unavailable or invalid response; block and refer to human review.',review_required:true,http_status:503,advisory_only:true,production_authorized:false}}];"
+      },
+      "id": "bbcb1623-93fc-4154-a525-7113fbe074c2",
+      "name": "Alignment Unavailable",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2160,
+        640
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "return [{json:{request_id:$('Validate Input').first().json.request_id,status:'manual_review',failed_service:\"Priority Unavailable\",message:'Service unavailable or invalid response; block and refer to human review.',review_required:true,http_status:503,advisory_only:true,production_authorized:false}}];"
+      },
+      "id": "86e356f3-757a-47d2-9977-8a377db4d9e4",
+      "name": "Priority Unavailable",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2640,
+        640
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ $json }}",
+        "options": {
+          "responseCode": "={{ $json.http_status }}"
+        }
+      },
+      "id": "16d1eb12-2607-4aa1-9823-9516d371960d",
+      "name": "Return Assessment",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.4,
+      "position": [
+        3360,
+        480
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Work Item Intake": {
+      "main": [
+        [
+          {
+            "node": "Validate Input",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validate Input": {
+      "main": [
+        [
+          {
+            "node": "Valid Input?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Valid Input?": {
+      "main": [
+        [
+          {
+            "node": "Score Frozen Model",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Reject Bad Input",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Score Frozen Model": {
+      "main": [
+        [
+          {
+            "node": "Check Model Response",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Model Unavailable",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Model Response": {
+      "main": [
+        [
+          {
+            "node": "Model Valid?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Model Valid?": {
+      "main": [
+        [
+          {
+            "node": "Duplicate?",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Model Unavailable",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Duplicate?": {
+      "main": [
+        [
+          {
+            "node": "Duplicate - No Action",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Retrieve Document Alignment",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Retrieve Document Alignment": {
+      "main": [
+        [
+          {
+            "node": "Check Alignment Response",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Alignment Unavailable",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Alignment Response": {
+      "main": [
+        [
+          {
+            "node": "Alignment Valid?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Alignment Valid?": {
+      "main": [
+        [
+          {
+            "node": "Assess Priority",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Alignment Unavailable",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Assess Priority": {
+      "main": [
+        [
+          {
+            "node": "Combine Decision",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Priority Unavailable",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Combine Decision": {
+      "main": [
+        [
+          {
+            "node": "Needs Human Review?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Needs Human Review?": {
+      "main": [
+        [
+          {
+            "node": "Human Review Required",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Routine Advisory",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Human Review Required": {
+      "main": [
+        [
+          {
+            "node": "Return Assessment",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Routine Advisory": {
+      "main": [
+        [
+          {
+            "node": "Return Assessment",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Duplicate - No Action": {
+      "main": [
+        [
+          {
+            "node": "Return Assessment",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Reject Bad Input": {
+      "main": [
+        [
+          {
+            "node": "Return Assessment",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Model Unavailable": {
+      "main": [
+        [
+          {
+            "node": "Return Assessment",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Alignment Unavailable": {
+      "main": [
+        [
+          {
+            "node": "Return Assessment",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Priority Unavailable": {
+      "main": [
+        [
+          {
+            "node": "Return Assessment",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "a6a22a9b-28f0-4e80-9afd-f53895c6db89",
+  "meta": {
+    "instanceId": "aa702e05a6ff54a10d3a85f70651d2672fc701fdbc23ce10b2c18babdf603c33"
+  },
+  "nodeGroups": [],
+  "id": "YVLrPOc1eCSTfwZf",
+  "tags": []
+}
