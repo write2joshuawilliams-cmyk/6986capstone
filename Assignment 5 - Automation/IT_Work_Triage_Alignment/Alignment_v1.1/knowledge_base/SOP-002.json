@@ -1,0 +1,18 @@
+{
+  "document_id": "SOP-002",
+  "title": "Access Request Procedure",
+  "type": "SOP",
+  "domain": "Security/Policy",
+  "version": "1.0",
+  "provenance": "Synthetic academic example; not an actual agency policy or authoritative guidance.",
+  "sections": [
+    {
+      "section_id": "1",
+      "heading": "Vendor access intake",
+      "passage": "Record the requesting sponsor, intended systems, purpose, expiration, privileges, and MFA arrangement. Send privileged vendor access requests to the security owner for approval.",
+      "relevance_pattern": "\\b(vendor|contractor)\\b.*\\b(access|admin|privileg\\w*)\\b",
+      "conflict_pattern": "\\b(?:without (?:mfa|multifactor|approval)|permanent privileged)\\b",
+      "alignment_pattern": ""
+    }
+  ]
+}

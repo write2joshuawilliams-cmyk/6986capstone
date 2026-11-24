@@ -1,0 +1,12 @@
+PRI-001 critical outage: PASS | expected=P1 actual=P1 | review=True
+PRI-002 security incident: PASS | expected=P1 actual=P1 | review=True
+PRI-003 recovery failure: PASS | expected=P2 actual=P2 | review=True
+PRI-004 planned maintenance: PASS | expected=P3 actual=P3 | review=False
+PRI-005 low impact: PASS | expected=P4 actual=P4 | review=False
+PRI-006 policy conflict: PASS | expected=P2 actual=P2 | review=True
+PRI-007 unknown impact: PASS | expected=Undetermined actual=Undetermined | review=True
+PRI-008 unmapped: PASS | expected=P4 actual=P4 | review=True
+PRI-009 high impact and urgency: PASS | expected=P1 actual=P1 | review=True
+PRI-010 unknown incident: PASS | expected=P4 actual=P4 | review=True
+Invalid input: PASS | HTTP 422
+11/11 regression cases passed.

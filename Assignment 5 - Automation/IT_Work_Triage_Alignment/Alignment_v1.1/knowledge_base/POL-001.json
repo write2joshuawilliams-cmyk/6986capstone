@@ -1,0 +1,26 @@
+{
+  "document_id": "POL-001",
+  "title": "Privileged Access Policy",
+  "type": "Policy",
+  "domain": "Security/Policy",
+  "version": "1.0",
+  "provenance": "Synthetic academic example; not an actual agency policy or authoritative guidance.",
+  "sections": [
+    {
+      "section_id": "1",
+      "heading": "Vendor access",
+      "passage": "Vendor administrative access to production systems must be approved, time-limited, least-privileged, and protected by multifactor authentication (MFA). Permanent privileged vendor access or access without MFA requires rejection or formal security exception review.",
+      "relevance_pattern": "\\b(vendor|third.party|contractor)\\b.*\\b(access|admin|privileg\\w*)\\b|\\b(privileg\\w*|admin)\\b.*\\b(vendor|contractor)\\b",
+      "conflict_pattern": "\\b(permanent|without (?:mfa|multifactor|multi.factor)|disable (?:mfa|multifactor)|no mfa)\\b",
+      "alignment_pattern": "(?=.*\\bapproved\\b)(?=.*\\btime.limited\\b)(?=.*\\bleast.privilege\\w*\\b)(?=.*\\b(?:with mfa|with multifactor|mfa enabled)\\b)"
+    },
+    {
+      "section_id": "2",
+      "heading": "Security exceptions",
+      "passage": "Requests to bypass authentication, access controls or security monitoring must be reviewed by the security owner and documented before implementation.",
+      "relevance_pattern": "\\b(mfa|multifactor|authentication|access control|security monitoring)\\b.*\\b(bypass|disable|exception)\\b|\\b(bypass|disable|exception)\\b.*\\b(mfa|multifactor|authentication|access control|security monitoring)\\b",
+      "conflict_pattern": "\\b(without (?:approval|review)|unapproved)\\b",
+      "alignment_pattern": ""
+    }
+  ]
+}

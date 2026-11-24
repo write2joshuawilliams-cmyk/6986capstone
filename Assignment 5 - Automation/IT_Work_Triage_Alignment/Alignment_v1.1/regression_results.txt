@@ -1,0 +1,10 @@
+ALIGN-001: PASS | expected=Potential Conflict actual=Potential Conflict | citations=POL-001 v1.0 §1, SOP-002 v1.0 §1, STR-001 v1.0 §2
+ALIGN-002: PASS | expected=Requires Review actual=Requires Review | citations=POL-002 v1.0 §1, SOP-001 v1.0 §1, STR-001 v1.0 §1
+ALIGN-003: PASS | expected=Aligned actual=Aligned | citations=POL-002 v1.0 §1, SOP-001 v1.0 §1, STR-001 v1.0 §1
+ALIGN-004: PASS | expected=Potential Conflict actual=Potential Conflict | citations=POL-003 v1.0 §1, SOP-003 v1.0 §1, STR-001 v1.0 §1
+ALIGN-005: PASS | expected=Potential Conflict actual=Potential Conflict | citations=POL-004 v1.0 §1, SOP-004 v1.0 §1, STR-001 v1.0 §3
+ALIGN-006: PASS | expected=Unmapped actual=Unmapped | citations=
+ALIGN-007: PASS | expected=Requires Review actual=Requires Review | citations=POL-002 v1.0 §1, SOP-001 v1.0 §1, STR-001 v1.0 §1
+ALIGN-008: PASS | expected=Requires Review actual=Requires Review | citations=POL-003 v1.0 §1, SOP-003 v1.0 §1, STR-001 v1.0 §1
+Invalid input: PASS | HTTP 422
+9/9 regression cases passed.

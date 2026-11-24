@@ -1,0 +1,18 @@
+{
+  "document_id": "POL-002",
+  "title": "Change and Recovery Policy",
+  "type": "Policy",
+  "domain": "Infrastructure",
+  "version": "1.0",
+  "provenance": "Synthetic academic example; not an actual agency policy or authoritative guidance.",
+  "sections": [
+    {
+      "section_id": "1",
+      "heading": "Production changes",
+      "passage": "Production changes require documented authorization, an impact assessment, a rollback approach and an approved maintenance window where applicable.",
+      "relevance_pattern": "\\b(patch\\w*|operating system update|production change|firmware|maintenance window)\\b",
+      "conflict_pattern": "\\b(without (?:approval|authorization|rollback)|unapproved|skip (?:approval|rollback))\\b",
+      "alignment_pattern": "(?=.*\\b(?:approved change ticket|documented authorization|approved change procedure)\\b)(?=.*\\b(?:approved|scheduled) maintenance window\\b)(?=.*\\b(?:completed impact assessment|impact assessment completed)\\b)(?=.*\\b(?:documented rollback plan|rollback confirmed)\\b)"
+    }
+  ]
+}

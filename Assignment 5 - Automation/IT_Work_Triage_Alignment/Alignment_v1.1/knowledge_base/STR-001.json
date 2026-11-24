@@ -1,0 +1,35 @@
+{
+  "document_id": "STR-001",
+  "title": "Technology Strategic Plan",
+  "type": "Strategy",
+  "domain": "Cross-domain",
+  "version": "1.0",
+  "provenance": "Synthetic academic example; not an actual agency policy or authoritative guidance.",
+  "sections": [
+    {
+      "section_id": "1",
+      "heading": "Reliable services",
+      "passage": "Objective 1: Maintain reliable and recoverable public services through controlled maintenance, tested recovery capabilities and reduced operational disruption.",
+      "relevance_pattern": "\\b(?:patch\\w*|maintenance|outage)\\b|\\b(?:backup (?:monitoring|job\\w*|fail\\w*|configuration)|restore\\w*|retention|immutab\\w*|recovery (?:protection|test\\w*|cop\\w*))\\b",
+      "conflict_pattern": "\\bskip (?:backup|rollback|validation)\\b|\\bwithout (?:approval|rollback)\\b|\\bunapproved\\b",
+      "alignment_pattern": "(?=.*\\b(?:approved change ticket|documented authorization|approved change procedure)\\b)(?=.*\\b(?:approved|scheduled) maintenance window\\b)(?=.*\\b(?:completed impact assessment|impact assessment completed)\\b)(?=.*\\b(?:documented rollback plan|rollback confirmed)\\b)(?=.*\\b(?:verified backup|backup confirmed|rollback confirmed)\\b)(?=.*\\b(?:work recorded|change ticket)\\b)(?=.*\\b(?:post.change validation|service health validated)\\b)",
+      "search_terms": "backup retention patch patches patching operating system maintenance restore recovery outage rollback"
+    },
+    {
+      "section_id": "2",
+      "heading": "Security and trust",
+      "passage": "Objective 2: Reduce security risk by enforcing least privilege, multifactor authentication, controlled vendor access and documented security decisions.",
+      "relevance_pattern": "\\b(vendor access|vendor.*privileg|mfa|multifactor|authentication|privileg\\w*|access control|security monitoring)\\b",
+      "conflict_pattern": "\\b(without (?:mfa|multifactor)|permanent privileged|disable mfa)\\b",
+      "alignment_pattern": ""
+    },
+    {
+      "section_id": "3",
+      "heading": "Responsible investment",
+      "passage": "Objective 3: Align technology investments with documented business needs, lifecycle affordability, interoperability and accountable procurement.",
+      "relevance_pattern": "(?=.*\\b(?:technology|enterprise|storage|server|software|hardware|network|cloud|IT|cybersecurity|data center|licen[cs]e)\\b)(?=.*\\b(?:procure\\w*|purchas\\w*|rfp|contract|vendor proposal|renewal|acquir\\w*)\\b)",
+      "conflict_pattern": "\\b(?:without|skip(?:ping)?|bypass(?:ing)?|no|omit(?:ting)?)\\s+(?:[\\w-]+\\s+){0,5}(?:review|approval|assessment|justification|requirements)\\b|\\bunapproved\\b",
+      "alignment_pattern": ""
+    }
+  ]
+}
