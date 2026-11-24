@@ -2,7 +2,7 @@
 
 INAI 6986 capstone | Joshua Williams | Mid-sized state agency case study
 
-IRIS recommends routine generalist handling or escalation for IT work items. It is advisory only and cannot authorize production changes. A deterministic priority guide and local SOP, policy and strategy evidence retrieval are planned separate components.
+The workflow recommends routine generalist handling or escalation for IT work items. It is advisory only and cannot authorize production changes. A deterministic priority guide and local SOP, policy and strategy evidence retrieval are planned separate components.
 
 ## Evidence to date
 - Synthetic dataset: 200 scenarios, four domains, 120 train / 40 validation / 40 protected test.
