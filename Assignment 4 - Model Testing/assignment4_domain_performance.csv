@@ -1,0 +1,5 @@
+Domain,Cases,Escalation_Cases,Recall_Escalation,Precision_Escalation,F1_Escalation,Accuracy,FN,FP,TP,TN
+Backup/DR,10,5,0.6,1.0,0.75,0.8,2,0,3,5
+Infrastructure,10,5,0.8,0.8,0.8,0.8,1,1,4,4
+Procurement/Vendor/RFP,10,5,1.0,1.0,1.0,1.0,0,0,5,5
+Security/Policy,10,5,1.0,1.0,1.0,1.0,0,0,5,5

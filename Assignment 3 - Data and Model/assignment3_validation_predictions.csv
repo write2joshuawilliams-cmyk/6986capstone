@@ -1,0 +1,41 @@
+scenario_id,domain,scenario_text,escalation_label,baseline_prediction,logistic_regression,linear_svm,naive_bayes
+INF-002,Infrastructure,Increase memory on a supported application server after the application owner confirms the change window and the platform has available capacity.,0,0,0,0,0
+INF-007,Infrastructure,Install an operating-system release that is outside the agency's supported standard because a vendor says its application will not run on the supported version.,1,0,1,1,1
+SEC-002,Security/Policy,Reset a user's password after identity verification using the approved service-desk process.,0,0,0,0,0
+SEC-007,Security/Policy,Disable multi-factor authentication for an application because several users are having difficulty completing the second factor.,1,0,1,1,1
+BDR-002,Backup/DR,Run the scheduled quarterly restore test for a non-critical server using the documented recovery procedure.,0,0,0,0,0
+BDR-007,Backup/DR,"Reduce database backup retention from 90 days to 14 days to save storage, without confirming records-retention or business requirements.",1,1,1,1,1
+PRC-002,Procurement/Vendor/RFP,Confirm that a bidder included the required support term and response-time commitment stated in the solicitation.,0,0,0,0,0
+PRC-007,Procurement/Vendor/RFP,Accept a hosted vendor solution that stores agency data outside the United States because its price is substantially lower than competing bids.,1,0,1,1,1
+INF-012,Infrastructure,"Add monitoring for CPU, memory, and disk utilization on an existing supported server using the agency's standard monitoring platform and alert thresholds.",0,0,0,0,0
+INF-017,Infrastructure,Disable application health checks in the load balancer because one server is intermittently failing the checks and being removed from service.,1,0,0,0,0
+SEC-012,Security/Policy,Enable standard operating-system audit logging on a newly deployed server using the approved logging baseline and forward logs to the existing logging platform.,0,0,0,0,0
+SEC-017,Security/Policy,Ignore repeated endpoint alerts from one executive workstation because the user reports that the computer is working normally.,1,0,1,1,1
+BDR-013,Backup/DR,Verify that the immutable backup copy for a protected workload is still within the approved retention period and passes the platform's integrity check.,0,0,0,0,0
+BDR-016,Backup/DR,Promise business leadership a one-hour recovery point for a critical application even though backups currently run every eight hours and no additional replication is configured.,1,0,1,1,1
+PRC-012,Procurement/Vendor/RFP,Ask a bidder to clarify which supported operating-system versions are included in its proposal because the response lists only a product family.,0,0,1,1,0
+PRC-017,Procurement/Vendor/RFP,Approve a proposal that depends on an unsupported version of the agency's database platform because replacing the database would increase the vendor's implementation cost.,1,1,1,1,1
+INF-023,Infrastructure,Apply an approved firmware update to a storage controller using the vendor procedure during a scheduled maintenance window.,0,0,0,0,0
+INF-027,Infrastructure,"Combine production and test workloads on the same storage volumes to avoid purchasing additional capacity, even though the current design separates them.",1,0,1,1,1
+SEC-023,Security/Policy,Remove an expired temporary administrator account after confirming the associated maintenance work is complete.,0,0,0,0,0
+SEC-027,Security/Policy,Allow a system administrator to use a personal email account to receive security alerts because the agency mailbox is difficult to access after hours.,1,0,1,1,1
+BDR-022,Backup/DR,Review a weekly backup-failure report and rerun a failed job after correcting a documented credential issue.,0,0,0,0,0
+BDR-027,Backup/DR,Change the recovery plan to restore only the application server and omit its external database dependency to shorten the documented recovery time.,1,0,0,0,1
+PRC-021,Procurement/Vendor/RFP,Confirm that a proposed product supports the operating-system versions listed as mandatory in the solicitation.,0,0,0,0,0
+PRC-027,Procurement/Vendor/RFP,Waive the requirement for audit-log export because the preferred product can only retain logs inside the vendor's cloud portal.,1,0,1,1,1
+INF-032,Infrastructure,"A supported server requires a memory increase that is already covered by the approved capacity plan, but the change must occur during a narrow maintenance window because another service depends on it.",0,0,0,0,0
+INF-038,Infrastructure,A development workload must be moved to another approved cluster because the current cluster is being retired under an existing migration plan.,0,0,1,0,0
+INF-046,Infrastructure,A replacement network device is functionally similar to the current one but uses a different operating system and management model not yet supported by staff tools.,1,0,0,0,0
+INF-048,Infrastructure,"A new server is requested in the production environment, but the application owner cannot identify backup, monitoring, authentication, or recovery requirements.",1,0,1,1,1
+SEC-034,Security/Policy,"A vulnerability scanner reports a medium finding that matches a known accepted vendor configuration, and the approved procedure requires documenting and monitoring it.",0,0,0,0,0
+SEC-038,Security/Policy,"A workstation triggers a suspicious-process alert, but the security platform automatically blocks the process and the runbook defines the validation steps.",0,0,0,0,0
+SEC-043,Security/Policy,"A server has a critical vulnerability, but remediation requires changing an application component that has not been tested by the vendor.",1,0,1,1,1
+SEC-046,Security/Policy,"A business application cannot meet one current hardening requirement, but the vendor offers a compensating configuration that is not part of the agency baseline.",1,0,1,1,1
+BDR-036,Backup/DR,An application owner asks for a one-time restore to a test environment using an existing isolated recovery network and approved access controls.,0,0,0,0,0
+BDR-039,Backup/DR,"A business system is moved to a different server, but its recovery tier, retention, and backup schedule remain unchanged and documented.",0,0,0,0,0
+BDR-042,Backup/DR,"A critical system is added to backup, but the owner asks to skip replication until bandwidth is upgraded sometime next year.",1,0,1,1,1
+BDR-046,Backup/DR,The team proposes keeping the backup console permanently logged in on a shared operations workstation to speed emergency restores.,1,0,1,1,1
+PRC-033,Procurement/Vendor/RFP,"A bidder omits a model number for a network adapter, and procurement requests clarification to verify compatibility with the published specification.",0,0,0,0,0
+PRC-037,Procurement/Vendor/RFP,A vendor asks whether a required reporting format can be delivered through the already approved secure file-transfer method instead of email.,0,0,0,0,0
+PRC-049,Procurement/Vendor/RFP,The project team wants to accept a lower backup-retention commitment from the vendor because all other technical scores are high.,1,0,1,1,1
+PRC-050,Procurement/Vendor/RFP,A vendor asks to substitute a different identity platform after award because its original integration estimate was too low.,1,0,1,1,1

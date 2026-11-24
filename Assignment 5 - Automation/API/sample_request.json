@@ -1,0 +1,5 @@
+{
+  "request_id": "IT-1001",
+  "domain": "Backup/DR",
+  "scenario_text": "Request to reduce backup retention from 90 days to 14 days to reclaim storage capacity."
+}

@@ -1,0 +1,41 @@
+scenario_id,domain,scenario_text,final_label
+BDR-001,Backup/DR,Restore a deleted department file from the previous night's successful backup after the file owner confirms the required restore point.,0
+BDR-006,Backup/DR,"Change the recovery point objective for a critical application from 24 hours to 4 hours without changing backup frequency, storage, or replication design.",1
+BDR-011,Backup/DR,Validate that a critical server's scheduled backup completed successfully and that the expected restore point appears in the backup catalog.,0
+BDR-017,Backup/DR,Shorten immutable backup retention from 30 days to 3 days so backup storage can be reclaimed more quickly.,1
+BDR-021,Backup/DR,Add a supported file server to the existing immutable backup policy using the same retention and copy settings as similar servers.,0
+BDR-026,Backup/DR,Stop backing up a low-use production application because no restore requests have been received in the last two years.,1
+BDR-034,Backup/DR,"A quarterly DR test reveals one documentation error, but all recovery steps succeed after the documented address is corrected.",0
+BDR-037,Backup/DR,A replication job falls behind during a network outage but catches up within the approved RPO once connectivity returns.,0
+BDR-041,Backup/DR,A business owner requests restoration of data older than the approved retention period and asks the backup team to locate an undocumented copy.,1
+BDR-044,Backup/DR,"A DR test restores the database successfully, but external authentication fails; the owner asks to record the test as fully successful because the core data was recovered.",1
+INF-001,Infrastructure,"Deploy a new Windows server using the agency's approved virtual-machine template, standard network segment, and existing backup policy.",0
+INF-006,Infrastructure,"Move a production application from the existing virtualization platform to a new cloud-hosting service that has not been reviewed for identity, logging, backup, or data-location requirements.",1
+INF-011,Infrastructure,"During a scheduled maintenance window, move a virtual machine to another host in the same approved cluster so a host can be rebooted for firmware maintenance.",0
+INF-016,Infrastructure,Reconfigure a two-node production cluster to run both nodes in the same physical rack even though the current design separates them to reduce common failure risk.,1
+INF-021,Infrastructure,Restart a non-clustered development server during an approved maintenance window after confirming no active user sessions and documenting the change.,0
+INF-026,Infrastructure,Continue operating a production server after the vendor ends support for its operating system because the application team cannot upgrade for another year.,1
+INF-031,Infrastructure,"A production VM shows high CPU during month-end processing. Monitoring confirms the pattern is expected, capacity remains within the approved threshold, and no user impact is reported.",0
+INF-036,Infrastructure,"A file server is short on space. The approved storage pool has capacity, but the request asks for an increase much larger than recent growth would justify.",0
+INF-041,Infrastructure,"A legacy application cannot tolerate the agency's planned network segmentation, and the owner asks to leave it on a broad shared subnet indefinitely.",1
+INF-043,Infrastructure,"A production server needs more CPU, but the cluster is already near its approved capacity threshold and adding resources may affect failover capability.",1
+PRC-001,Procurement/Vendor/RFP,"Verify that a proposed server meets the published CPU, memory, warranty, and support requirements in the solicitation.",0
+PRC-006,Procurement/Vendor/RFP,Remove the encryption-at-rest requirement from an RFP because several vendors say meeting it will increase cost.,1
+PRC-011,Procurement/Vendor/RFP,Verify that a vendor's proposed storage platform supports the interface and capacity requirements already published in the solicitation.,0
+PRC-016,Procurement/Vendor/RFP,Accept a vendor architecture that requires the agency to expose an internal management interface directly to the public internet because the vendor says it simplifies support.,1
+PRC-022,Procurement/Vendor/RFP,Request clarification from a bidder whose response does not specify whether software updates are included during the support term.,0
+PRC-028,Procurement/Vendor/RFP,Permit a vendor to begin additional implementation work not included in the executed contract because the work is needed to meet the project schedule.,1
+PRC-032,Procurement/Vendor/RFP,"A vendor response uses different terminology for an encryption feature, and the supporting documentation shows it satisfies the stated requirement.",0
+PRC-039,Procurement/Vendor/RFP,"A vendor support engineer needs temporary remote access during implementation, and the solicitation already requires agency-approved time-limited access with logging.",0
+PRC-042,Procurement/Vendor/RFP,"A vendor proposes storing diagnostic copies of agency data in its support environment for troubleshooting, but the solicitation does not authorize that use.",1
+PRC-045,Procurement/Vendor/RFP,A vendor can meet the required four-hour support response only if the agency purchases a premium service tier not included in the evaluated price.,1
+SEC-001,Security/Policy,Disable a terminated employee's account and remove standard group memberships using the documented offboarding checklist.,0
+SEC-006,Security/Policy,Allow a vendor to keep a permanent administrator account on a production server so support staff can connect whenever needed.,1
+SEC-011,Security/Policy,Investigate a failed-login alert and close it after confirming the user mistyped a password several times and no other suspicious activity is present.,0
+SEC-016,Security/Policy,Turn off centralized logging for a production application because the log volume is increasing storage costs.,1
+SEC-021,Security/Policy,Enable the approved screen-lock policy on newly deployed workstations using the existing endpoint-management baseline.,0
+SEC-026,Security/Policy,Exclude a critical application server from endpoint protection because the vendor says its software performs better without it.,1
+SEC-031,Security/Policy,A user reports repeated MFA prompts after changing phones. The approved support process resets the user's MFA registration after identity verification.,0
+SEC-032,Security/Policy,"A privileged administrator needs temporary elevated access for a documented maintenance task, and the existing process provides time-limited approval and logging.",0
+SEC-041,Security/Policy,A vendor asks to whitelist an entire external IP range because its support staff may connect from multiple offices.,1
+SEC-042,Security/Policy,"A legacy application supports MFA for administrators but not standard users, and the owner asks to exempt the entire application from MFA policy.",1
