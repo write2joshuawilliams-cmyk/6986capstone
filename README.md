@@ -1,4 +1,4 @@
-# IRIS — Lightweight On-Premises AI-Assisted IT Work Triage
+# Lightweight On-Premises AI-Assisted IT Work Triage
 
 INAI 6986 capstone | Joshua Williams | Mid-sized state agency case study
 
