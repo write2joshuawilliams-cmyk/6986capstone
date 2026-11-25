@@ -1,0 +1,165 @@
+{
+  "utc": "2026-11-25T20:09:37.623604+00:00",
+  "sklearn_version": "1.6.1",
+  "input_hashes": {
+    "development": "d2eb9a0f4af18ae06d798addd05c93082655a3ea59b01ee8553cbbb1a0dccd3e",
+    "original_test": "495ec57c87f8bdc2fa77571621e90c882be485379088249f162601eac71fda2e",
+    "independent": "c069343457ed8adae4af9da3dfc6840c201cc53025af044181c36abfb179ce50",
+    "model": "e7e440cacfc5926e4eab482bc9baad188eebedf2dbab22b21b3d49fcffac4239"
+  },
+  "protocol": "Post-test diagnostic; fixed stopword-only contiguous unigram/bigram analyzer; train only; no tuning",
+  "n_features": 221,
+  "metrics": {
+    "validation": {
+      "frozen_NB_v1": {
+        "n": 40,
+        "TN": 20,
+        "FP": 0,
+        "FN": 2,
+        "TP": 18,
+        "recall": 0.9,
+        "recall_Wilson95": [
+          0.6989663547715196,
+          0.9721335187862309
+        ],
+        "precision": 1.0,
+        "precision_Wilson95": [
+          0.8241207763533505,
+          1
+        ],
+        "accuracy": 0.95,
+        "accuracy_Wilson95": [
+          0.8349612263085947,
+          0.9861793326138512
+        ],
+        "f1": 0.9473684210526315,
+        "false_positive_rate": 0.0
+      },
+      "style_only_NB": {
+        "n": 40,
+        "TN": 17,
+        "FP": 3,
+        "FN": 4,
+        "TP": 16,
+        "recall": 0.8,
+        "recall_Wilson95": [
+          0.5839825677481129,
+          0.9193423374202
+        ],
+        "precision": 0.8421052631578947,
+        "precision_Wilson95": [
+          0.6243452472967159,
+          0.9447952836146571
+        ],
+        "accuracy": 0.825,
+        "accuracy_Wilson95": [
+          0.6805000966821273,
+          0.9125458625396392
+        ],
+        "f1": 0.8205128205128205,
+        "false_positive_rate": 0.15
+      }
+    },
+    "original_test": {
+      "frozen_NB_v1": {
+        "n": 40,
+        "TN": 19,
+        "FP": 1,
+        "FN": 3,
+        "TP": 17,
+        "recall": 0.85,
+        "recall_Wilson95": [
+          0.6395811352592498,
+          0.9476312541037819
+        ],
+        "precision": 0.9444444444444444,
+        "precision_Wilson95": [
+          0.7424269921812815,
+          0.9901248090216964
+        ],
+        "accuracy": 0.9,
+        "accuracy_Wilson95": [
+          0.7694822477247816,
+          0.9604204713173927
+        ],
+        "f1": 0.8947368421052632,
+        "false_positive_rate": 0.05
+      },
+      "style_only_NB": {
+        "n": 40,
+        "TN": 18,
+        "FP": 2,
+        "FN": 3,
+        "TP": 17,
+        "recall": 0.85,
+        "recall_Wilson95": [
+          0.6395811352592498,
+          0.9476312541037819
+        ],
+        "precision": 0.8947368421052632,
+        "precision_Wilson95": [
+          0.6860591728889169,
+          0.9706414397011289
+        ],
+        "accuracy": 0.875,
+        "accuracy_Wilson95": [
+          0.7388788016114936,
+          0.9454049974905447
+        ],
+        "f1": 0.8717948717948718,
+        "false_positive_rate": 0.1
+      }
+    },
+    "independent": {
+      "frozen_NB_v1": {
+        "n": 20,
+        "TN": 7,
+        "FP": 4,
+        "FN": 4,
+        "TP": 5,
+        "recall": 0.5555555555555556,
+        "recall_Wilson95": [
+          0.266651293495499,
+          0.8112214789023309
+        ],
+        "precision": 0.5555555555555556,
+        "precision_Wilson95": [
+          0.266651293495499,
+          0.8112214789023309
+        ],
+        "accuracy": 0.6,
+        "accuracy_Wilson95": [
+          0.3865815007622585,
+          0.7811934676271791
+        ],
+        "f1": 0.5555555555555556,
+        "false_positive_rate": 0.36363636363636365
+      },
+      "style_only_NB": {
+        "n": 20,
+        "TN": 10,
+        "FP": 1,
+        "FN": 5,
+        "TP": 4,
+        "recall": 0.4444444444444444,
+        "recall_Wilson95": [
+          0.18877852109766918,
+          0.733348706504501
+        ],
+        "precision": 0.8,
+        "precision_Wilson95": [
+          0.3755346297625348,
+          0.9637758913675682
+        ],
+        "accuracy": 0.7,
+        "accuracy_Wilson95": [
+          0.4810271816464825,
+          0.8545227551323927
+        ],
+        "f1": 0.5714285714285714,
+        "false_positive_rate": 0.09090909090909091
+      }
+    }
+  },
+  "frozen_model_unchanged": true
+}

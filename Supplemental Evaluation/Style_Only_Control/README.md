@@ -1,0 +1,9 @@
+# Stopword-only diagnostic (CA-02)
+
+Fixed protocol: November 25, 2026, after original and independent evaluation. This is a diagnostic, not a new blinded test. Fit a separate default MultinomialNB on the 120 Train descriptions, with default TF-IDF weighting and the original contiguous word unigram/bigram tokenization, retaining only features composed entirely of scikit-learn English stopwords. No IT vocabulary, labels or rationale in the feature input. No joining across removed terms. Negation and other stopwords may convey genuine meaning, so the control is not a pure authorship detector. The professor did not specify exact vectorizer settings; this is a documented comparable control, not a guaranteed exact replication.
+
+Use the existing API virtual environment (scikit-learn 1.6.1). From repo root run the command in the chat, or open the notebook from this folder using the same environment. Requires pandas, openpyxl and joblib; install pandas/openpyxl if absent. Inputs must match the recorded SHA-256 hashes; do not bypass mismatches. The frozen NB-v1 is loaded only for comparison, never fitted. No new model artifact is saved. Existing results are not overwritten. The original test and independent set were already examined, so any results are descriptive post-test evidence. The independent labels are the author's reference labels, not independently adjudicated.
+
+Outputs: results/run.json (metrics and Wilson intervals, hashes and timestamp), comparison.csv, predictions.csv, style_vocabulary.csv. Preserve all outputs regardless of performance. Report counts, uncertainty and limitations. Do not use this experiment to tune the frozen classifier. The original target is 90% recall and 80% precision is a retrospective reference with unresolved pre-test provenance.
+
+AI disclosure: ChatGPT assisted with diagnostic code and protocol; student must personally run and verify the outputs. No additional scenario generation was performed.
