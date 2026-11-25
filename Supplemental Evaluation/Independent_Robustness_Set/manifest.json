@@ -1,0 +1,17 @@
+{
+  "dataset": "Independent Robustness Set v1.0",
+  "date": "2026-11-25",
+  "author": "Johnathan Smythe",
+  "provenance": "User attests human-authored without AI, no consultation of existing project materials, entirely synthetic. Not independently authenticated.",
+  "reference_labels": "Author labels only; no blind second labeling confirmed.",
+  "n": 20,
+  "routine": 11,
+  "escalation": 9,
+  "input": "scenario_text (Description only)",
+  "dataset_sha256": "c069343457ed8adae4af9da3dfc6840c201cc53025af044181c36abfb179ce50",
+  "source_sha256": "502400c6137c39ccbed4198d9100c269e651fd299a7ab1dc450a549151be2d2f",
+  "model_sha256": "e7e440cacfc5926e4eab482bc9baad188eebedf2dbab22b21b3d49fcffac4239",
+  "sklearn_version": "1.6.1",
+  "status_at_freeze": "Not scored",
+  "protocol": "Post-primary-test supplemental diagnostic; no fit, tuning, relabeling or replacement of original results. Recall target 0.90; 0.80 precision reference inherited from original evaluation, pre-test provenance not established."
+}

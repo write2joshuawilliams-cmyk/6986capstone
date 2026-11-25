@@ -1,0 +1,182 @@
+1. Shared Drive Quota Warning on Departmental Archive
+Short Description: Shared drive volume approaching 90% storage capacity
+
+Description: Automated monitoring alerted that the \\filesrv02\ops_archive volume is at 89% utilization after a batch of quarterly reporting exports was uploaded. No write errors have been reported yet.
+
+Label: Routine Task
+
+Reasoning: Capacity thresholds at 85%–90% with no active outage or blocked users are standard storage-maintenance work. Expanding the volume or archiving older logs follows documented capacity-management procedures without immediate service disruption.
+
+2. Intermittent Packet Loss Between App Tier and Reporting Database
+Short Description: Intermittent timeouts from reporting app tier to SQL reporting node
+
+Description: Analysts report sporadic query timeouts when pulling daily operational dashboards between 9:00 AM and 11:00 AM. Ping and port checks show intermittent packet loss across a core switch trunk linking the application subnet and database VLAN.
+
+Label: Escalation Required
+
+Reasoning: Sporadic packet loss across core network infrastructure during peak morning reporting hours affects multiple users and risks cascading timeouts across dependent services. It requires escalation to senior network engineering and infrastructure leads to isolate hardware faults, duplex mismatches, or congestion.
+
+3. Network Printer Queue Stalled on Floor 3 Print Server
+Short Description: Print jobs stuck in spooler on print-east-03
+
+Description: Multiple staff members on the third floor report that print jobs sent to East-Wing-Laser-02 remain in "Spooling" status and do not release at the device. Other printers mapped to the same server are printing normally.
+
+Label: Routine Task
+
+Reasoning: A single-queue spooler hang on an otherwise healthy print server is a common operational ticket. Clearing stuck jobs, restarting the spooler service or TCP/IP port, and verifying device responsiveness resolves it routinely.
+
+4. Dev/Test Kubernetes Ingress Certificate Expiring in 10 Days
+Short Description: TLS certificate on non-production ingress controller expiring soon
+
+Description: Certificate monitoring flagged that the wildcard TLS certificate on the qa-ingress cluster will expire in 10 days. Production endpoints are unaffected and use a separate automated renewal pipeline.
+
+Label: Routine Task
+
+Reasoning: An upcoming non-production certificate renewal with a 10-day runway and no live user impact is a planned maintenance task. Updating or renewing the certificate before expiration prevents future QA disruptions without emergency escalation.
+
+5. Production SFTP Gateway Unreachable for External Data Feeds
+Short Description: Cannot connect to sftp-gw-prod for morning batch ingestion
+
+Description: Morning automated batch jobs cannot establish an SFTP connection to sftp-gw-prod (port 22 times out), halting incoming partner data files required for daily processing.
+
+Label: Escalation Required
+
+Reasoning: An unreachable production gateway blocking daily batch ingestion impacts downstream operations and time-sensitive data pipelines. Escalating immediately to on-call infrastructure and network engineering speeds up firewall, service, or host recovery.
+
+Security / Policy
+6. New Contractor Account Provisioning with Standard Role Baseline
+Short Description: Provision standard non-privileged user account for incoming contractor
+
+Description: An onboarding request was submitted with approved manager sign-off and a defined end date for a new systems analyst starting Monday. The request asks for standard domain access and email only, with no elevated privileges.
+
+Label: Routine Task
+
+Reasoning: Creating a standard, time-bound account using a pre-approved role template and valid authorization follows standard identity and access management (IAM) workflows and does not require escalation.
+
+7. Repeated Failed MFA Prompts Followed by Successful Off-Hours Login
+Short Description: Burst of failed MFA challenges prior to unusual sign-in
+
+Description: Identity logs show 14 rejected MFA push notifications within six minutes for a single user account, followed shortly by a successful sign-in from an unfamiliar IP range outside normal business hours.
+
+Label: Escalation Required
+
+Reasoning: MFA fatigue followed by an anomalous successful authentication is a strong indicator of potential credential or token compromise. It requires immediate escalation to the Security Operations Center (SOC) / Incident Response team to contain the session, revoke tokens, and investigate.
+
+8. Temporary Exception Request to Bypass Screen-Lock Timer
+Short Description: Request to extend workstation auto-lock timeout from 10 to 60 minutes
+
+Description: A team lead requested a 60-minute screen-lock timeout on three lab workstations used during group walkthroughs, citing frequent re-authentication during demonstrations.
+
+Label: Escalation Required
+
+Reasoning: Weakening an endpoint security baseline (extending auto-lock beyond policy limits) introduces physical/shoulder-surfing exposure and sets a policy precedent. It should be escalated to Information Security governance/policy owners for formal risk review and exception approval.
+
+9. Stale Service Account Password Rotation Reminder
+Short Description: Rotate password for non-interactive batch service account svc_etl_archive
+
+Description: A scheduled credential-lifecycle ticket indicates svc_etl_archive is approaching its 90-day password rotation window. Dependent job owners and scheduled-task configurations are documented in the runbook.
+
+Label: Routine Task
+
+Reasoning: Routine credential rotation on a documented service account following a tested procedure is standard operational hygiene, provided dependent jobs are updated and verified during the maintenance window.
+
+10. Unauthorized Local Admin Tool Detected on Managed Laptop
+Short Description: Endpoint agent flagged unauthorized remote-access utility on workstation
+
+Description: Endpoint detection software quarantined an unsigned remote-support binary placed in a user's Downloads folder on a corporate laptop. The user states a third party told them to run it to troubleshoot a display issue.
+
+Label: Escalation Required
+
+Reasoning: Unapproved remote-access tooling—especially when paired with social-engineering-style guidance—creates a high risk of unauthorized access or backdoor persistence. Escalating to Security/IR ensures proper host isolation, forensic check, and user guidance.
+
+Backup / DR
+11. Single Accidental File Deletion Request from Shared Folder
+Short Description: Restore accidentally deleted spreadsheet from yesterday's snapshot
+
+Description: A user accidentally deleted Q4_Staffing_Notes_v2.xlsx from a shared network folder this morning and needs the version from last night's snapshot restored to a temporary recovery folder.
+
+Label: Routine Task
+
+Reasoning: Restoring a single non-critical file from a recent routine snapshot is one of the most common backup-operations requests. It is low risk and handled via standard snapshot recovery steps.
+
+12. Nightly Incremental Backup Job Failed on Critical Database Server
+Short Description: Backup job bk-sql-core-01 failed with VSS writer error
+
+Description: Last night's scheduled backup for sql-core-01 failed after 12 minutes with a Volume Shadow Copy (VSS) writer timeout, leaving no verified recovery point from the overnight window.
+
+Label: Escalation Required
+
+Reasoning: A failed backup on a core database leaves a gap in recovery capability and threatens Recovery Point Objective (RPO) compliance if unaddressed. Escalating to Backup/Storage and Database administrators helps resolve underlying storage or VSS issues before the next cycle.
+
+13. Monthly File-Level Restore Test Verification Log
+Short Description: Document monthly test restore of sample project directory
+
+Description: As part of the monthly backup verification schedule, a sample folder from the project file share was restored to an isolated test path, file counts and checksums matched, and results are logged for audit tracking.
+
+Label: Routine Task
+
+Reasoning: Executing and recording a scheduled, routine restore verification check is standard backup-assurance work when no anomalies or integrity failures are found.
+
+14. Disaster Recovery Failover Runbook Drill Failed During Replica Promotion
+Short Description: Secondary region database replica failed to promote during DR test
+
+Description: During a scheduled Disaster Recovery tabletop/failover exercise, promoting the standby database instance in the secondary region failed due to replication lag and stale DNS/connection-string cutover steps.
+
+Label: Escalation Required
+
+Reasoning: A failure to promote a DR replica or complete cutover during a test means actual failover could breach Recovery Time Objective (RTO) or data-loss targets during a real outage. This requires escalation to DR leads, database architects, and leadership to remediate gaps.
+
+15. Backup Media Retention Policy Tag Update for Completed Project
+Short Description: Apply 7-year legal/audit retention tag to closed archive set
+
+Description: Following formal project closure and records-retention approval, backup administrators need to apply a 7-year retention label to a completed archive backup set in the vault.
+
+Label: Routine Task
+
+Reasoning: Applying an approved retention tag to an existing backup archive is a straightforward administrative task governed by clear retention rules.
+
+Procurement / Vendor / RFP
+16. Renewal Quote Request for Existing Software Subscription Seat Count
+Short Description: Obtain renewal pricing for 150 existing analytics licenses
+
+Description: The annual renewal for an existing analytics tool is 75 days away. The business owner confirmed the license count remains at 150 seats with no scope changes, and procurement needs a formal quote to start renewal processing.
+
+Label: Routine Task
+
+Reasoning: Initiating a straightforward, like-for-like renewal with advance lead time and stable scope is standard procurement workflow and does not require escalation unless pricing, terms, or approvals hit roadblocks.
+
+17. Sole-Source Justification Needed for Specialized Hardware Module
+Short Description: Draft sole-source justification for proprietary rack expansion kit
+
+Description: An engineering team requested a specific proprietary expansion module that only one manufacturer builds for an existing chassis. Because there is no competitive bidding pool, formal sole-source documentation is required before purchase order release.
+
+Label: Escalation Required
+
+Reasoning: Sole-source procurements carry heightened compliance, audit, and fairness scrutiny because competition is bypassed. Escalating to Procurement leadership and legal/compliance reviewers ensures proper justification and policy adherence.
+
+18. Vendor Security Questionnaire and SOC 2 Review for New SaaS Tool
+Short Description: Collect vendor SOC 2 Type II report and data-handling responses for intake
+
+Description: A department wants to pilot a cloud scheduling tool. The vendor has been sent the standard security questionnaire and asked to provide their latest SOC 2 Type II report and data-residency details for initial screening.
+
+Label: Routine Task
+
+Reasoning: Gathering vendor documentation and running standard intake checks is routine vendor-risk/procurement coordination. Escalation would only be triggered if critical security gaps, unacceptable data terms, or high-risk findings emerge.
+
+19. RFP Evaluation Scoring Discrepancy Between Technical and Cost Panels
+Short Description: Conflicting scoring weights and missing evaluation notes in RFP matrix
+
+Description: Ahead of vendor shortlisting for a multi-year managed services RFP, two evaluation panelists submitted scores using an outdated rubric, and mandatory requirement pass/fail notes are incomplete for two bidders.
+
+Label: Escalation Required
+
+Reasoning: Scoring inconsistencies or incomplete evaluation records in an active RFP can compromise procurement integrity, fairness, and defensibility if challenged. Escalating to the Procurement lead/contracting officer is needed to pause scoring, reconcile the rubric, and document remediation.
+
+20. Purchase Order Status Check for Approved Monitor Accessories
+Short Description: Confirm shipping status and expected delivery date for approved PO
+
+Description: A purchase order for docking stations and monitor cables was approved last week. The requester is asking for the current vendor order confirmation and estimated delivery window.
+
+Label: Routine Task
+
+Reasoning: Checking order status and relaying delivery estimates from a vendor or catalog is standard operational follow-through with low risk.
