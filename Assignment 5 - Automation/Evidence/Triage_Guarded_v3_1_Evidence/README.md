@@ -10,4 +10,4 @@ Date: November 25, 2026
 
 All three planned scenarios passed. The mismatch test specifically exercised the outdated alignment service; other component mismatches were not independently tested. The retry event history is not included in these screenshots. Health-based version checks are not cryptographic verification of all services.
 
-The Troubleshooting folder preserves the n8n startup certificate trust error observed after reboot. It is not a version-guard test. Screenshots retain original dimensions and visual content; WebP files were converted to PNG. Review for personal or internal information before public release (particularly the troubleshooting screenshot, which displays a local account path).
+The n8n startup certificate-trust error was observed after reboot but is not a version-guard test. Its screenshot was removed from the current public tree because it displayed a local account path; retain private troubleshooting evidence locally. Earlier Git history may still contain the image.

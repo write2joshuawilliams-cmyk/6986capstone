@@ -1,25 +1,21 @@
-# IT Work Triage — Decision Support Dashboard v1.1
-Assignment 5 / INAI 6986. Local academic prototype; synthetic data only.
+# IT Work Triage — Dashboard v1.2.0
 
-## Start
-1. Start classification 8000, alignment v1.1 8001, priority 8002, audit 8003, and n8n 5678 (loopback only).
-2. In n8n open the tested v3.1 workflow and Publish/activate it. Confirm production POST path `/webhook/it-work-triage-v31`. No manual Execute is needed for production URL. Preserve prior workflow exports.
-3. Extract this package to `Assignment 5 - Automation/Dashboard_v1.1`. Run `start_dashboard.bat`. No pip installation needed (Python 3.13 standard library only).
-4. Manually type http://127.0.0.1:8004/. Check four service indicators. Submit Routine example, inspect details and audit events. Submit Vendor example and record a simulated reviewer decision. Refresh history. For failed records use the explicit retry button after restoring the failed service; it sends the original work item unchanged. Do not retry processing or reviewed records.
+INAI 6986 / Assignment 5. This directory retains the name Dashboard_v1.1 for compatibility with the tested launcher. The HTML identifies the current application as v1.2.0.
 
-## Architecture
-Browser talks only to a loopback Python HTTP server; fixed local proxy routes send intake to n8n production webhook and read records/events or send review decisions to the audit API. No external services or dependencies. The dashboard does not replace the workflow or duplicate its rules. Service cards check health and versions; n8n registration is verified only by submitting a request. The stored record is authoritative, including the separate original assessment and reviewer decision. Confidence is uncalibrated. No production authorization. Reviewer identities are self-reported; no authentication, RBAC, TLS or tamper-resistant logs. Keep all services loopback-only and never expose to a network. No real work items or private data. Do not publish runtime databases. A timeout may leave a processing record; inspect history before retrying. Interrupted processing recovery remains a limitation.
+## Startup
 
-## Acceptance tests on Windows
-- Existing FINAL-001 / FINAL-002 records visible; review history survives restart.
-- New routine example: P3, aligned, routine advisory, three citations.
-- New vendor example: P2, potential conflict, pending review; accept escalation with justification; verify event and no production authorization.
-- Reuse identical ID/payload: duplicate returned; no repeated assessment. Changed payload: blocked.
-- Stop alignment, submit new synthetic item: failed audit state; restore alignment v1.1 and explicitly retry; verify attempt 2 and history.
-- Stop audit: assessment blocked; no success claimed. Restore afterward.
-- Test filter, evidence, override/reject controls using new pending-review cases.
+Follow the [Assignment 5 setup guide](../README.md). Start the four local APIs and n8n; publish the [tested v3.1 workflow](../IT_Work_Triage_v3/IT%20Work%20Triage%20v3.1%20-%20Version%20Guarded%20TESTED.json). Use the [master launcher v1.2](../Start_All_Services_v1_2.bat), or run start_dashboard.bat after other services are ready. Python 3.13 standard library only. Manually type `http://127.0.0.1:8004/`; do not append tracking parameters. The dashboard uses the local production POST webhook, not the test webhook.
 
-Development checks are not live n8n/browser validation. Use screenshots and sanitized records for evidence.
+## Features
 
-## v1.1 change
-Display explicit duplicate notification from the workflow response next to Run assessment. No backend or security logic changed. Windows/browser retest required.
+Work-item intake, automatic request IDs, service readiness and version indicators, assessment history, frozen classification and uncalibrated confidence, priority justification, policy/SOP/strategy citations and retrieved passages, human acceptance/rejection/override with justification, explicit retry and audit history. Identical duplicate submissions display a notification and preserve the existing record; changed payloads with the same ID are blocked.
+
+The prioritized list ranks stored records P1 through P4, then unranked, with older assessments first within each group where available. It displays counts, filters, clickable work items, domain, assessment state, review decision, attempt and provisional priority. It includes historical and regression-test records; it is advisory, not an execution queue.
+
+## Demonstrated tests
+
+See [dashboard v1.0 testing](../Evidence/Dashboard_v1_0_Testing_Evidence/) and [final prototype testing](../Evidence/Final_Prototype_Testing_Evidence/). Demonstrations verified routine and high-risk requests, evidence display, human review decisions, duplicates, failure and retry. The final extension demonstrated priority list updates, P4, filtering and navigation. Startup was exercised on Windows with the corrected launcher. The duplicate notice was verified near the submission form; exact automatic scrolling behavior was not independently established.
+
+## Limitations
+
+The local Python server proxies fixed local endpoints. Service health cards do not prove webhook registration. Reviewer names are self-reported; no authentication, RBAC, TLS or tamper-resistant logs. Synthetic documents and rule-based matching are not verified compliance. Unmapped is not approval. A timeout may leave a processing record; inspect history before retrying. No production authorization. Keep all services loopback-only and do not publish runtime data.

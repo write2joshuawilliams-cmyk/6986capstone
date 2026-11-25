@@ -1,1 +1,0 @@
-Dashboard v1.1.1 UI-only patch. Stop dashboard, copy app.js, index.html and style.css into Dashboard_v1.1 replacing the existing files, restart dashboard and hard refresh. Existing backend, launcher and database unchanged. Banner uses confirmed duplicate response, appears above assessment details and scrolls into view. Local browser verification required.
