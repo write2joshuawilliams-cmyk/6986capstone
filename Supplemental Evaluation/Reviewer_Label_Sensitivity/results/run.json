@@ -1,0 +1,79 @@
+{
+  "protocol": "Post-test sensitivity analysis of saved predictions; no inference or training",
+  "input_hashes": {
+    "predictions": "14728e8d9c0b9be20051b34cb186765a906dab1c9df21b1d40418f8015cac104",
+    "review": "f51da20a6aded513667a846880e203354e619891ca8fb8d0372d950015ae9d75",
+    "frozen_test": "495ec57c87f8bdc2fa77571621e90c882be485379088249f162601eac71fda2e"
+  },
+  "final_labels": {
+    "n": 40,
+    "TN": 19,
+    "FP": 1,
+    "FN": 3,
+    "TP": 17,
+    "recall": 0.85,
+    "recall_Wilson95": [
+      0.6395811352592431,
+      0.9476312541037835
+    ],
+    "precision": 0.9444444444444444,
+    "precision_Wilson95": [
+      0.7424269921812741,
+      0.990124809021697
+    ],
+    "accuracy": 0.9,
+    "accuracy_Wilson95": [
+      0.7694822477247771,
+      0.9604204713173936
+    ],
+    "f1": 0.8947368421052632,
+    "recall_target_met": false
+  },
+  "reviewer_labels": {
+    "n": 40,
+    "TN": 20,
+    "FP": 2,
+    "FN": 2,
+    "TP": 16,
+    "recall": 0.8888888888888888,
+    "recall_Wilson95": [
+      0.672002348698212,
+      0.9689804773543876
+    ],
+    "precision": 0.8888888888888888,
+    "precision_Wilson95": [
+      0.672002348698212,
+      0.9689804773543876
+    ],
+    "accuracy": 0.9,
+    "accuracy_Wilson95": [
+      0.7694822477247771,
+      0.9604204713173936
+    ],
+    "f1": 0.8888888888888888,
+    "recall_target_met": false
+  },
+  "disagreements": [
+    {
+      "scenario_id": "BDR-006",
+      "domain": "Backup/DR",
+      "model_prediction": 1,
+      "project_label": 1,
+      "final_label": 1,
+      "reviewer_label": 0,
+      "review_date_as_recorded": "11/23/2026"
+    },
+    {
+      "scenario_id": "BDR-017",
+      "domain": "Backup/DR",
+      "model_prediction": 0,
+      "project_label": 1,
+      "final_label": 1,
+      "reviewer_label": 0,
+      "review_date_as_recorded": "11/23/2026"
+    }
+  ],
+  "review_date_as_recorded": [
+    "11/23/2026"
+  ]
+}
