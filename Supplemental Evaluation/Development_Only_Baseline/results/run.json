@@ -1,0 +1,234 @@
+{
+  "utc": "2026-11-25T20:21:14.517706+00:00",
+  "sklearn_version": "1.6.1",
+  "pandas_version": "3.1.1",
+  "input_hashes": {
+    "development": "d2eb9a0f4af18ae06d798addd05c93082655a3ea59b01ee8553cbbb1a0dccd3e",
+    "original_test": "495ec57c87f8bdc2fa77571621e90c882be485379088249f162601eac71fda2e",
+    "independent": "c069343457ed8adae4af9da3dfc6840c201cc53025af044181c36abfb179ce50",
+    "model": "e7e440cacfc5926e4eab482bc9baad188eebedf2dbab22b21b3d49fcffac4239"
+  },
+  "protocol": "Retrospective training-only binary unigram OR comparator; min support 3; min training precision 80%; maximum 10 rules; greedy gain; no validation/test selection",
+  "candidate_count": 25,
+  "rules": [
+    "production",
+    "asks",
+    "wants",
+    "requires",
+    "create",
+    "reduce",
+    "hours",
+    "accept",
+    "allow",
+    "legacy"
+  ],
+  "metrics": {
+    "train": {
+      "training_only_OR_rules": {
+        "n": 120,
+        "TN": 57,
+        "FP": 3,
+        "FN": 16,
+        "TP": 44,
+        "recall": 0.7333333333333333,
+        "recall_Wilson95": [
+          0.6099128690331671,
+          0.8286735999671923
+        ],
+        "precision": 0.9361702127659575,
+        "precision_Wilson95": [
+          0.8283738581687596,
+          0.9780546147945661
+        ],
+        "accuracy": 0.8416666666666667,
+        "accuracy_Wilson95": [
+          0.7659066765413223,
+          0.8962302264058983
+        ],
+        "f1": 0.822429906542056,
+        "false_positive_rate": 0.05
+      },
+      "frozen_NB_v1": {
+        "n": 120,
+        "TN": 60,
+        "FP": 0,
+        "FN": 0,
+        "TP": 60,
+        "recall": 1.0,
+        "recall_Wilson95": [
+          0.9398281478579132,
+          0.9999999999999999
+        ],
+        "precision": 1.0,
+        "precision_Wilson95": [
+          0.9398281478579132,
+          0.9999999999999999
+        ],
+        "accuracy": 1.0,
+        "accuracy_Wilson95": [
+          0.9689808335812982,
+          1
+        ],
+        "f1": 1.0,
+        "false_positive_rate": 0.0
+      }
+    },
+    "validation": {
+      "training_only_OR_rules": {
+        "n": 40,
+        "TN": 16,
+        "FP": 4,
+        "FN": 10,
+        "TP": 10,
+        "recall": 0.5,
+        "recall_Wilson95": [
+          0.29929800819821695,
+          0.700701991801783
+        ],
+        "precision": 0.7142857142857143,
+        "precision_Wilson95": [
+          0.453509156701075,
+          0.8827862135542279
+        ],
+        "accuracy": 0.65,
+        "accuracy_Wilson95": [
+          0.4950588083725812,
+          0.7786547112682342
+        ],
+        "f1": 0.5882352941176471,
+        "false_positive_rate": 0.2
+      },
+      "frozen_NB_v1": {
+        "n": 40,
+        "TN": 20,
+        "FP": 0,
+        "FN": 2,
+        "TP": 18,
+        "recall": 0.9,
+        "recall_Wilson95": [
+          0.6989663547715196,
+          0.9721335187862309
+        ],
+        "precision": 1.0,
+        "precision_Wilson95": [
+          0.8241207763533505,
+          1
+        ],
+        "accuracy": 0.95,
+        "accuracy_Wilson95": [
+          0.8349612263085947,
+          0.9861793326138512
+        ],
+        "f1": 0.9473684210526315,
+        "false_positive_rate": 0.0
+      }
+    },
+    "original_test": {
+      "training_only_OR_rules": {
+        "n": 40,
+        "TN": 17,
+        "FP": 3,
+        "FN": 6,
+        "TP": 14,
+        "recall": 0.7,
+        "recall_Wilson95": [
+          0.4810271816464825,
+          0.8545227551323927
+        ],
+        "precision": 0.8235294117647058,
+        "precision_Wilson95": [
+          0.5897054143116658,
+          0.9380887336237884
+        ],
+        "accuracy": 0.775,
+        "accuracy_Wilson95": [
+          0.6249690325769044,
+          0.8768390867645905
+        ],
+        "f1": 0.7567567567567568,
+        "false_positive_rate": 0.15
+      },
+      "frozen_NB_v1": {
+        "n": 40,
+        "TN": 19,
+        "FP": 1,
+        "FN": 3,
+        "TP": 17,
+        "recall": 0.85,
+        "recall_Wilson95": [
+          0.6395811352592498,
+          0.9476312541037819
+        ],
+        "precision": 0.9444444444444444,
+        "precision_Wilson95": [
+          0.7424269921812815,
+          0.9901248090216964
+        ],
+        "accuracy": 0.9,
+        "accuracy_Wilson95": [
+          0.7694822477247816,
+          0.9604204713173927
+        ],
+        "f1": 0.8947368421052632,
+        "false_positive_rate": 0.05
+      }
+    },
+    "independent": {
+      "training_only_OR_rules": {
+        "n": 20,
+        "TN": 8,
+        "FP": 3,
+        "FN": 8,
+        "TP": 1,
+        "recall": 0.1111111111111111,
+        "recall_Wilson95": [
+          0.019890887638545657,
+          0.43499970557664625
+        ],
+        "precision": 0.25,
+        "precision_Wilson95": [
+          0.04558726080970238,
+          0.6993581574175893
+        ],
+        "accuracy": 0.45,
+        "accuracy_Wilson95": [
+          0.25819785825562847,
+          0.6579146575496526
+        ],
+        "f1": 0.15384615384615385,
+        "false_positive_rate": 0.2727272727272727
+      },
+      "frozen_NB_v1": {
+        "n": 20,
+        "TN": 7,
+        "FP": 4,
+        "FN": 4,
+        "TP": 5,
+        "recall": 0.5555555555555556,
+        "recall_Wilson95": [
+          0.266651293495499,
+          0.8112214789023309
+        ],
+        "precision": 0.5555555555555556,
+        "precision_Wilson95": [
+          0.266651293495499,
+          0.8112214789023309
+        ],
+        "accuracy": 0.6,
+        "accuracy_Wilson95": [
+          0.3865815007622585,
+          0.7811934676271791
+        ],
+        "f1": 0.5555555555555556,
+        "false_positive_rate": 0.36363636363636365
+      }
+    }
+  },
+  "frozen_model_unchanged": true,
+  "original_keyword_baseline_reported_recall": {
+    "train": 0.1,
+    "validation": 0.1,
+    "original_test": 0.55
+  },
+  "original_keyword_baseline_test_contaminated": true
+}
