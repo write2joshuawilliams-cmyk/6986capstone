@@ -1,0 +1,1343 @@
+{
+  "name": "IT Work Triage v3.1 - Version Guarded",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "it-work-triage-v31",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "9ae5a83e-fca8-4b67-b6c5-c75cef141310",
+      "name": "Work Item Intake",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        0,
+        400
+      ],
+      "webhookId": "d14a196c-2b59-46a6-95a1-897f6965779b"
+    },
+    {
+      "parameters": {
+        "jsCode": "const b=$input.first().json.body ?? {};\nconst id=typeof b.request_id==='string'?b.request_id.trim():'';\nconst text=typeof b.scenario_text==='string'?b.scenario_text.trim():'';\nconst domain=b.domain??null;\nconst fields={impact:['low','medium','high','unknown'],urgency:['low','medium','high','unknown'],critical_outage:['yes','no','unknown'],active_security_incident:['yes','no','unknown'],critical_recovery_failure:['yes','no','unknown']};\nconst risk={}; let valid=id.length>0&&id.length<=100&&text.length>=5&&text.length<=10000&&(domain===null||(typeof domain==='string'&&domain.length<=100));\nfor(const [k,allowed] of Object.entries(fields)){risk[k]=b[k]===undefined?'unknown':b[k];if(!allowed.includes(risk[k]))valid=false;}\nif(b.retry!==undefined&&typeof b.retry!==\"boolean\")valid=false;\nreturn [{json:{retry:b.retry===true,valid,request_id:id,scenario_text:text,domain,...risk}}];"
+      },
+      "id": "8ede896d-afbe-4571-888c-19dd22e841b2",
+      "name": "Validate Input",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        480,
+        400
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "3ad0118d-a14d-41e5-b7aa-6bf3ccfd70c5",
+              "leftValue": "={{ $json.valid }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "55280420-c0b5-4fca-a2c0-689a8c740a33",
+      "name": "Valid Input?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        960,
+        400
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://127.0.0.1:8000/score",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({request_id:'ATT-'+$('Check Audit Registration').first().json.record.attempt_token.slice(0,24),scenario_text:$('Validate Input').first().json.scenario_text,domain:$('Validate Input').first().json.domain}) }}",
+        "options": {
+          "response": {
+            "response": {
+              "fullResponse": true,
+              "neverError": true,
+              "responseFormat": "json"
+            }
+          },
+          "timeout": 10000
+        }
+      },
+      "id": "c56251f4-3585-4d95-927b-488234ade662",
+      "name": "Score Frozen Model",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        3360,
+        240
+      ],
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "const r=$input.first().json,b=r.body??{},id=$('Validate Input').first().json.request_id;\nconst ok=r.statusCode===200&&b.request_id==='ATT-'+$('Check Audit Registration').first().json.record.attempt_token.slice(0,24)&&b.status==='scored'&&[0,1].includes(b.prediction_code)&&b.model_sha256==='e7e440cacfc5926e4eab482bc9baad188eebedf2dbab22b21b3d49fcffac4239'&&b.model_version==='NB-v1'&&Number.isFinite(b.confidence)&&b.confidence>=0&&b.confidence<=1;\nreturn [{json:{ok,request_id:id,classification:ok?{...b,scoring_request_id:b.request_id,request_id:id}:null}}];"
+      },
+      "id": "41c9934a-3d33-483c-9bc7-ee7801052e22",
+      "name": "Check Model Response",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3840,
+        240
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "12f5f1b5-d167-451a-934f-b9d2446a24bd",
+              "leftValue": "={{ $json.ok }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "641b6e69-0b3d-4650-b72f-a9c500980379",
+      "name": "Model Valid?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        4320,
+        240
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://127.0.0.1:8001/align",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({request_id:$('Validate Input').first().json.request_id,scenario_text:$('Validate Input').first().json.scenario_text,domain:$('Validate Input').first().json.domain}) }}",
+        "options": {
+          "response": {
+            "response": {
+              "fullResponse": true,
+              "neverError": true,
+              "responseFormat": "json"
+            }
+          },
+          "timeout": 10000
+        }
+      },
+      "id": "cb707c3d-01ad-45bf-b828-71c456569aef",
+      "name": "Retrieve Document Alignment",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        4800,
+        400
+      ],
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "const r=$input.first().json,b=r.body??{},id=$('Validate Input').first().json.request_id;\nconst ok=r.statusCode===200&&b.request_id===id&&['Aligned','Requires Review','Potential Conflict','Unmapped'].includes(b.alignment_status)&&['policy','sop','strategy'].every(k=>Array.isArray(b[k]))&&typeof b.review_required==='boolean'&&b.production_authorized===false;\nreturn [{json:{ok,alignment:ok?{...b,health_engine_version:$('Alignment Health').first().json.body.engine_version}:null}}];"
+      },
+      "id": "3af692d5-9cfa-447d-854b-e70f84edeee6",
+      "name": "Check Alignment Response",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        5280,
+        400
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "2ee786aa-6d04-408a-84f1-03d7d8265967",
+              "leftValue": "={{ $json.ok }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "f59c0552-33d5-47a7-8b18-7e6ec02dbf0c",
+      "name": "Alignment Valid?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        5760,
+        400
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://127.0.0.1:8002/priority",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({request_id:$('Validate Input').first().json.request_id,impact:$('Validate Input').first().json.impact,urgency:$('Validate Input').first().json.urgency,critical_outage:$('Validate Input').first().json.critical_outage,active_security_incident:$('Validate Input').first().json.active_security_incident,critical_recovery_failure:$('Validate Input').first().json.critical_recovery_failure,alignment_status:$('Check Alignment Response').first().json.alignment.alignment_status}) }}",
+        "options": {
+          "response": {
+            "response": {
+              "fullResponse": true,
+              "neverError": true,
+              "responseFormat": "json"
+            }
+          },
+          "timeout": 10000
+        }
+      },
+      "id": "0e5d7500-41ff-4f7c-b9bd-f18c7c5a3141",
+      "name": "Assess Priority",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        6240,
+        400
+      ],
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "const r=$input.first().json,p=r.body??{},i=$('Validate Input').first().json,c=$('Check Model Response').first().json.classification,a=$('Check Alignment Response').first().json.alignment;\nconst ok=r.statusCode===200&&p.request_id===i.request_id&&['P1','P2','P3','P4','Undetermined'].includes(p.priority)&&typeof p.review_required==='boolean'&&typeof p.provisional==='boolean'&&Array.isArray(p.reasons)&&p.production_authorized===false&&p.engine_version==='1.0.0';\nconst reasons=[];if(c.prediction_code===1)reasons.push('Classifier recommends escalation');if(a.alignment_status!=='Aligned'||a.review_required)reasons.push('Document alignment requires review');if(!ok)reasons.push('Priority service response invalid');else if(p.review_required||p.provisional||!['P3','P4'].includes(p.priority))reasons.push('Priority assessment requires review');\nreturn [{json:{request_id:i.request_id,classification:c,alignment:a,priority:ok?p:null,review_required:reasons.length>0,review_reasons:reasons,status:ok?'assessed':'manual_review',http_status:ok?200:503,advisory_only:true,production_authorized:false,assessed_at:new Date().toISOString()}}];"
+      },
+      "id": "057e606e-0aeb-4d08-8440-fd7708f7c788",
+      "name": "Combine Decision",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        6720,
+        400
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "348566fb-a1a8-4f1f-9e7e-bcff3baedd3e",
+              "leftValue": "={{ $json.review_required }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "f685c392-892e-49ce-a2b1-6568e8b99704",
+      "name": "Needs Human Review?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        7200,
+        400
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "return [{json:{...$json,action:'hold_for_manual_review',review_status:'pending',message:'Human review required. No production action authorized.'}}];"
+      },
+      "id": "21bfae90-4952-41eb-b362-4ea68f566ac6",
+      "name": "Human Review Required",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        7680,
+        240
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "return [{json:{...$json,action:'return_routine_advisory',message:'Routine handling recommended. Existing approval and change controls still apply.'}}];"
+      },
+      "id": "2b292889-0069-46f4-a2d6-18ea59faa828",
+      "name": "Routine Advisory",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        7680,
+        480
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "return [{json:{request_id:$json.request_id,status:'rejected',message:'Invalid request ID, scenario, domain or risk indicator.',review_required:true,http_status:400,production_authorized:false}}];"
+      },
+      "id": "fed7a35b-b52e-451f-aa1b-d7ecd1a19251",
+      "name": "Reject Bad Input",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1440,
+        816
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "return [{json:{request_id:$('Validate Input').first().json.request_id,status:'manual_review',failed_service:\"Model Unavailable\",message:'Model service unavailable, invalid response or version mismatch (expected NB-v1 and frozen hash); block and refer to human review.',review_required:true,http_status:503,advisory_only:true,production_authorized:false}}];"
+      },
+      "id": "760bd957-4915-4889-9087-a7231afda731",
+      "name": "Model Unavailable",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        4800,
+        800
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "return [{json:{request_id:$('Validate Input').first().json.request_id,status:'manual_review',failed_service:\"Alignment Unavailable\",message:'Alignment service unavailable, invalid response or version mismatch (expected 1.1.0); block and refer to human review.',review_required:true,http_status:503,advisory_only:true,production_authorized:false}}];"
+      },
+      "id": "cf4116de-3abb-4d93-a180-8a6fecd0e57a",
+      "name": "Alignment Unavailable",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        6240,
+        800
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "return [{json:{request_id:$('Validate Input').first().json.request_id,status:'manual_review',failed_service:\"Priority Unavailable\",message:'Priority service unavailable, invalid response or version mismatch (expected 1.0.0); block and refer to human review.',review_required:true,http_status:503,advisory_only:true,production_authorized:false}}];"
+      },
+      "id": "12f9614f-3471-410b-b367-81bc3831ffb1",
+      "name": "Priority Unavailable",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        7200,
+        800
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ $json }}",
+        "options": {
+          "responseCode": "={{ $json.http_status }}"
+        }
+      },
+      "id": "a629877f-bf3a-4054-9324-3a635ee346f3",
+      "name": "Return Assessment",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.4,
+      "position": [
+        9600,
+        560
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://127.0.0.1:8003/begin",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({work_item:(({valid,retry,...item})=>item)($('Validate Input').first().json),retry:$('Validate Input').first().json.retry}) }}",
+        "options": {
+          "response": {
+            "response": {
+              "fullResponse": true,
+              "neverError": true,
+              "responseFormat": "json"
+            }
+          },
+          "timeout": 10000
+        }
+      },
+      "id": "108d23f6-8513-4dd3-a5fd-98f47e06d830",
+      "name": "Register Audit Attempt",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1440,
+        240
+      ],
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "const r=$input.first().json,b=r.body??{},i=$('Validate Input').first().json;\nconst ok=r.statusCode===200&&b.request_id===i.request_id&&b.production_authorized===false&&typeof b.start_assessment==='boolean'&&(!b.start_assessment||(b.state==='processing'&&typeof b.attempt_token==='string'&&/^[a-f0-9]{48}$/.test(b.attempt_token)));\nreturn [{json:{ok,conflict:r.statusCode===409,start:ok&&b.start_assessment,record:ok?b:null}}];"
+      },
+      "id": "7eb96674-6796-4079-8f4e-1bd822189387",
+      "name": "Check Audit Registration",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1920,
+        240
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "1d86b3a7-119b-4831-a6d6-9682ebca6849",
+              "leftValue": "={{ $json.ok }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "021c275b-eac9-492e-9116-cf0275ee202c",
+      "name": "Audit Registration Valid?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        2400,
+        240
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "904e338f-5a57-476c-8960-2d3dc5eb521f",
+              "leftValue": "={{ $json.start }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "922663f9-c444-44f5-b91a-83c8b01e221d",
+      "name": "Start Assessment?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        2880,
+        240
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const b=$json.record;return [{json:{...b,status:'duplicate',action:'no_repeat_action',review_required:!['routine_advisory','reviewed'].includes(b.state),http_status:200,production_authorized:false}}];"
+      },
+      "id": "2a9c5187-15fd-4d32-85cf-259fcb023d0c",
+      "name": "Existing Audit Record",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3360,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "return [{json:{request_id:$('Validate Input').first().json.request_id,status:'manual_review',review_required:true,production_authorized:false,http_status:$json.conflict===true?409:503,message:'Audit registration failed, audit version mismatch or request ID conflicts. Assessment blocked.'}}];"
+      },
+      "id": "12b4dc25-fec0-4fc5-ba74-eba04aa76afb",
+      "name": "Audit Registration Failed",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2880,
+        928
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://127.0.0.1:8003/finish",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({request_id:$('Validate Input').first().json.request_id,attempt_token:$('Check Audit Registration').first().json.record.attempt_token,assessment:$json}) }}",
+        "options": {
+          "response": {
+            "response": {
+              "fullResponse": true,
+              "neverError": true,
+              "responseFormat": "json"
+            }
+          },
+          "timeout": 10000
+        }
+      },
+      "id": "bb97851b-d5ab-49b9-901d-8aabd72692cf",
+      "name": "Persist Assessment",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        8640,
+        400
+      ],
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "const r=$input.first().json,b=r.body??{},id=$('Validate Input').first().json.request_id;\nconst ok=r.statusCode===200&&b.request_id===id&&b.production_authorized===false&&['routine_advisory','pending_review','failed'].includes(b.state)&&b.assessment&&b.assessment.request_id===id&&b.assessment.production_authorized===false;\nif(!ok)return [{json:{request_id:id,status:'manual_review',review_required:true,production_authorized:false,http_status:503,message:'Audit commit not confirmed. Block; inspect audit record before retry.'}}];\nreturn [{json:{...b.assessment,audit_state:b.state,attempt:b.attempt,review_required:b.state!=='routine_advisory',production_authorized:false,http_status:b.state==='failed'?503:200}}];"
+      },
+      "id": "4300cba0-247b-4714-b156-96e753df6a3d",
+      "name": "Verify Audit Commit",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        9120,
+        400
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "return [{json:{request_id:$('Validate Input').first().json.request_id,status:'manual_review',review_required:true,production_authorized:false,http_status:503,message:'Audit service unavailable during commit. Block; inspect record before retry.'}}];"
+      },
+      "id": "925dd400-1020-417f-ab35-3a2040983ee0",
+      "name": "Audit Commit Unavailable",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        9120,
+        800
+      ]
+    },
+    {
+      "parameters": {
+        "url": "http://127.0.0.1:8003/health",
+        "options": {
+          "response": {
+            "response": {
+              "fullResponse": true,
+              "neverError": true,
+              "responseFormat": "json"
+            }
+          },
+          "timeout": 10000
+        }
+      },
+      "id": "b5c99cdf-96b6-4669-8a8b-d118e1bddad4",
+      "name": "Audit Health",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1104,
+        0
+      ],
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "01b7ac67-7e9d-416f-9634-32247febb093",
+              "leftValue": "={{ $json.statusCode === 200 && $json.body?.status === 'ok' && ($json.body?.version==='1.0.0'&&$json.body?.production_authorized===false) }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "b475303e-39b6-46ee-bd02-7993807e057f",
+      "name": "Audit Version Valid?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1328,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "url": "http://127.0.0.1:8000/health",
+        "options": {
+          "response": {
+            "response": {
+              "fullResponse": true,
+              "neverError": true,
+              "responseFormat": "json"
+            }
+          },
+          "timeout": 10000
+        }
+      },
+      "id": "2ec32109-7629-4fc5-99dd-5e793704ff36",
+      "name": "Model Health",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        3024,
+        0
+      ],
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "13656d92-57b2-43d4-8d60-fdd22826e784",
+              "leftValue": "={{ $json.statusCode === 200 && $json.body?.status === 'ok' && ($json.body?.model_version==='NB-v1'&&$json.body?.model_sha256==='e7e440cacfc5926e4eab482bc9baad188eebedf2dbab22b21b3d49fcffac4239'&&$json.body?.model_loaded===true) }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "217ba9fd-720d-4156-9e4d-19ea29865b3c",
+      "name": "Model Version Valid?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        3248,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "url": "http://127.0.0.1:8001/health",
+        "options": {
+          "response": {
+            "response": {
+              "fullResponse": true,
+              "neverError": true,
+              "responseFormat": "json"
+            }
+          },
+          "timeout": 10000
+        }
+      },
+      "id": "78ea6a15-bfc8-4d3a-a1cd-9ce60e37cc11",
+      "name": "Alignment Health",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        4464,
+        160
+      ],
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "b3fb3fe4-942a-4122-82bd-d466eae429ef",
+              "leftValue": "={{ $json.statusCode === 200 && $json.body?.status === 'ok' && ($json.body?.engine_version==='1.1.0') }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "32db81af-a098-4163-9d9e-a93461bd8dde",
+      "name": "Alignment Version Valid?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        4688,
+        160
+      ]
+    },
+    {
+      "parameters": {
+        "url": "http://127.0.0.1:8002/health",
+        "options": {
+          "response": {
+            "response": {
+              "fullResponse": true,
+              "neverError": true,
+              "responseFormat": "json"
+            }
+          },
+          "timeout": 10000
+        }
+      },
+      "id": "bca58b4d-d6a8-414a-9ed7-6fcc92de6397",
+      "name": "Priority Health",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        5904,
+        160
+      ],
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "430d84a2-df16-4ce8-8002-ad6fda0ac312",
+              "leftValue": "={{ $json.statusCode === 200 && $json.body?.status === 'ok' && ($json.body?.engine_version==='1.0.0') }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "81cf5322-4a43-4865-be5f-c87ab302372b",
+      "name": "Priority Version Valid?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        6128,
+        160
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Work Item Intake": {
+      "main": [
+        [
+          {
+            "node": "Validate Input",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validate Input": {
+      "main": [
+        [
+          {
+            "node": "Valid Input?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Valid Input?": {
+      "main": [
+        [
+          {
+            "node": "Audit Health",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Reject Bad Input",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Score Frozen Model": {
+      "main": [
+        [
+          {
+            "node": "Check Model Response",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Model Unavailable",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Model Response": {
+      "main": [
+        [
+          {
+            "node": "Model Valid?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Model Valid?": {
+      "main": [
+        [
+          {
+            "node": "Alignment Health",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Model Unavailable",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Retrieve Document Alignment": {
+      "main": [
+        [
+          {
+            "node": "Check Alignment Response",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Alignment Unavailable",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Alignment Response": {
+      "main": [
+        [
+          {
+            "node": "Alignment Valid?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Alignment Valid?": {
+      "main": [
+        [
+          {
+            "node": "Priority Health",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Alignment Unavailable",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Assess Priority": {
+      "main": [
+        [
+          {
+            "node": "Combine Decision",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Priority Unavailable",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Combine Decision": {
+      "main": [
+        [
+          {
+            "node": "Needs Human Review?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Needs Human Review?": {
+      "main": [
+        [
+          {
+            "node": "Human Review Required",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Routine Advisory",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Human Review Required": {
+      "main": [
+        [
+          {
+            "node": "Persist Assessment",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Routine Advisory": {
+      "main": [
+        [
+          {
+            "node": "Persist Assessment",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Reject Bad Input": {
+      "main": [
+        [
+          {
+            "node": "Return Assessment",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Model Unavailable": {
+      "main": [
+        [
+          {
+            "node": "Persist Assessment",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Alignment Unavailable": {
+      "main": [
+        [
+          {
+            "node": "Persist Assessment",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Priority Unavailable": {
+      "main": [
+        [
+          {
+            "node": "Persist Assessment",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Register Audit Attempt": {
+      "main": [
+        [
+          {
+            "node": "Check Audit Registration",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Audit Registration Failed",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Audit Registration": {
+      "main": [
+        [
+          {
+            "node": "Audit Registration Valid?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Audit Registration Valid?": {
+      "main": [
+        [
+          {
+            "node": "Start Assessment?",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Audit Registration Failed",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Start Assessment?": {
+      "main": [
+        [
+          {
+            "node": "Model Health",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Existing Audit Record",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Existing Audit Record": {
+      "main": [
+        [
+          {
+            "node": "Return Assessment",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Audit Registration Failed": {
+      "main": [
+        [
+          {
+            "node": "Return Assessment",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Persist Assessment": {
+      "main": [
+        [
+          {
+            "node": "Verify Audit Commit",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Audit Commit Unavailable",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Verify Audit Commit": {
+      "main": [
+        [
+          {
+            "node": "Return Assessment",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Audit Commit Unavailable": {
+      "main": [
+        [
+          {
+            "node": "Return Assessment",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Audit Health": {
+      "main": [
+        [
+          {
+            "node": "Audit Version Valid?",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Audit Registration Failed",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Audit Version Valid?": {
+      "main": [
+        [
+          {
+            "node": "Register Audit Attempt",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Audit Registration Failed",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Model Health": {
+      "main": [
+        [
+          {
+            "node": "Model Version Valid?",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Model Unavailable",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Model Version Valid?": {
+      "main": [
+        [
+          {
+            "node": "Score Frozen Model",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Model Unavailable",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Alignment Health": {
+      "main": [
+        [
+          {
+            "node": "Alignment Version Valid?",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Alignment Unavailable",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Alignment Version Valid?": {
+      "main": [
+        [
+          {
+            "node": "Retrieve Document Alignment",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Alignment Unavailable",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Priority Health": {
+      "main": [
+        [
+          {
+            "node": "Priority Version Valid?",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Priority Unavailable",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Priority Version Valid?": {
+      "main": [
+        [
+          {
+            "node": "Assess Priority",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Priority Unavailable",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "0975bab3-e449-4a44-b65e-9500c744552c",
+  "meta": {
+    "instanceId": "aa702e05a6ff54a10d3a85f70651d2672fc701fdbc23ce10b2c18babdf603c33"
+  },
+  "nodeGroups": [],
+  "id": "vqMf0wdfVyyOj3d3",
+  "tags": []
+}
